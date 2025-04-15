@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Log analizer by Fox - Drive Beyond Horizon</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #121212;
+      color: #eee;
+      margin: 0;
+      padding: 2rem;
+    }
+    h1 {
+      color: #00c3ff;
+    }
+    input[type="file"] {
+      margin-top: 1rem;
+      margin-bottom: 2rem;
+    }
+    .result {
+      background: #1e1e1e;
+      border: 1px solid #333;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border-radius: 8px;
+    }
+    .wrong {
+      color: #ff5555;
+    }
+    .expected {
+      color: #50fa7b;
+    }
+    .location {
+      color: #8be9fd;
+    }
+    .empty {
+      color: #ffaa00;
+    }
+    .footer {
+      margin-top: 3rem;
+      font-size: 0.8rem;
+      color: #888;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔍 Log analizer by Fox - Drive Beyond Horizon</h1>
+  <div id="path-indications">
+    C:\Users\"user"\AppData\Local\DriveBeyondHorizons\Saved\Logs
+  </div>
+  <input type="file" id="logInput" accept=".log,.txt">
+  <div id="output"></div>
+
+  <script>
+    document.getElementById("logInput").addEventListener("change", function () {
+      const file = this.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const lines = e.target.result.split(/\r?\n/);
+        const output = document.getElementById("output");
+        output.innerHTML = "";
+
+        let found = 0;
+
+        lines.forEach(line => {
+          const lower = line.toLowerCase();
+
+          // Caso: "wrong part"
+          if (lower.includes("wrong part")) {
+            const match = line.match(/(.*?) is a wrong part on: (.*?) expected: (.*)/i);
+            if (match) {
+              found++;
+              const [_, wrongPart, location, expected] = match;
+
+              const div = document.createElement("div");
+              div.className = "result";
+              div.innerHTML = `
+                <div class="wrong">❌ Wrong Part: <strong>${wrongPart.trim()}</strong></div>
+                <div class="location">📍 Where: <strong>${location.trim()}</strong></div>
+                <div class="expected">✅ Required: <strong>${expected.trim()}</strong></div>
+              `;
+              output.appendChild(div);
+            }
+
+          // Caso: "is empty"
+          } else if (lower.includes(" is empty")) {
+            const cleanMatch = line.match(/\[None\]\s+(.*?)\s+is empty/i);
+            const component = cleanMatch ? cleanMatch[1].trim() : line.trim();
+
+            found++;
+            const div = document.createElement("div");
+            div.className = "result";
+            div.innerHTML = `
+              <div class="empty">⚠️ Missing element: <strong>${component}</strong></div>
+            `;
+            output.appendChild(div);
+          }
+        });
+
+        if (found === 0) {
+          output.innerHTML = `<p>Nessuna parte mancante trovata 🎉</p>`;
+        }
+      };
+
+      reader.readAsText(file);
+    });
+  </script>
+
+  <div class="footer">By Fox</div>
+</body>
+</html>
