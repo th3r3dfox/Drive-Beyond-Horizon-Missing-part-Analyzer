@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Log analyzer by Fox - Drive Beyond Horizon</title>
+  <title>Log Analyzer - Drive Beyond Horizon</title>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -14,10 +14,25 @@
     h1 {
       color: #00c3ff;
     }
-    input[type="file"] {
-      margin-top: 1rem;
-      margin-bottom: 2rem;
+
+    .dropzone {
+      border: 2px dashed #555;
+      border-radius: 8px;
+      padding: 2rem;
+      text-align: center;
+      transition: 0.2s ease;
+      margin-bottom: 1.5rem;
     }
+
+    .dropzone.dragover {
+      background-color: #1f1f1f;
+      border-color: #00c3ff;
+    }
+
+    input[type="file"] {
+      display: none;
+    }
+
     .result {
       background: #1e1e1e;
       border: 1px solid #333;
@@ -25,90 +40,155 @@
       margin-bottom: 1rem;
       border-radius: 8px;
     }
+
     .wrong {
       color: #ff5555;
     }
+
     .expected {
       color: #50fa7b;
     }
+
     .location {
       color: #8be9fd;
     }
+
     .empty {
       color: #ffaa00;
     }
+
     .footer {
       margin-top: 3rem;
       font-size: 0.8rem;
       color: #888;
     }
+
+    .browse-label {
+      cursor: pointer;
+      color: #00c3ff;
+      text-decoration: underline;
+    }
+
+    em {
+      color: #aaa;
+      font-size: 0.9em;
+    }
   </style>
 </head>
 <body>
-  <h1>🔍 Log analyzer by Fox - Drive Beyond Horizon</h1>
-  <div id="path-indications">
-    C:\Users\"user"\AppData\Local\DriveBeyondHorizons\Saved\Logs
+  <h1>🔍 Missing Part Analyzer By Fox 🇮🇹 - Drive Beyond Horizon</h1>
+
+  <div class="dropzone" id="dropzone">
+    Drag and drop your `.log` file here or <label for="logInput" class="browse-label">click to browse</label>.<br>
+    <small>📁 Recommended path: <code>C:\LogGiochi\DriveBeyondHorizons.log</code></small>
+    <input type="file" id="logInput" accept=".log,.txt">
   </div>
-  <input type="file" id="logInput" accept=".log,.txt">
+
   <div id="output"></div>
 
   <script>
-    document.getElementById("logInput").addEventListener("change", function () {
-      const file = this.files[0];
-      if (!file) return;
+    const dropzone = document.getElementById("dropzone");
+    const fileInput = document.getElementById("logInput");
+    const output = document.getElementById("output");
 
-      const reader = new FileReader();
-      reader.onload = function (e) {
-        const lines = e.target.result.split(/\r?\n/);
-        const output = document.getElementById("output");
-        output.innerHTML = "";
+    // Human-readable name mapping
+    function humanizePartName(partName) {
+      const replacements = {
+        "BP_UAZ_Light_05_C": "Front right light for UAZ Jeep",
+        "BP_Tucker_Light_IR_C": "Right rear light for Tucker",
+        "BP_Tucker_Light_IL_C": "Left rear light for Tucker",
+        "BP_Musgoat_Light_Top_C": "Top light for Musgoat",
+        "BP_Tucker_Light_IL_C_2139086842": "Rear left light (instance) for Tucker",
+        // Add more translations as needed
+      };
+      return replacements[partName] || partName;
+    }
 
-        let found = 0;
+    function processLog(text) {
+      const lines = text.split(/\r?\n/);
+      output.innerHTML = "";
+      let found = 0;
 
-        lines.forEach(line => {
-          const lower = line.toLowerCase();
+      lines.forEach(line => {
+        const lower = line.toLowerCase();
 
-          // Caso: "wrong part"
-          if (lower.includes("wrong part")) {
-            const match = line.match(/(.*?) is a wrong part on: (.*?) expected: (.*)/i);
-            if (match) {
-              found++;
-              const [_, wrongPart, location, expected] = match;
-
-              const div = document.createElement("div");
-              div.className = "result";
-              div.innerHTML = `
-                <div class="wrong">❌ Wrong Part: <strong>${wrongPart.trim()}</strong></div>
-                <div class="location">📍 Where: <strong>${location.trim()}</strong></div>
-                <div class="expected">✅ Required: <strong>${expected.trim()}</strong></div>
-              `;
-              output.appendChild(div);
-            }
-
-          // Caso: "is empty"
-          } else if (lower.includes(" is empty")) {
-            const cleanMatch = line.match(/\[None\]\s+(.*?)\s+is empty/i);
-            const component = cleanMatch ? cleanMatch[1].trim() : line.trim();
-
+        // "wrong part"
+        if (lower.includes("wrong part")) {
+          const match = line.match(/(.*?) is a wrong part on: (.*?) expected: (.*)/i);
+          if (match) {
             found++;
+            const [_, wrongPart, location, expected] = match;
+            const wrongClean = wrongPart.trim();
+            const expectedClean = expected.trim();
+            const humanWrong = humanizePartName(wrongClean);
+            const humanExpected = humanizePartName(expectedClean);
+
             const div = document.createElement("div");
             div.className = "result";
             div.innerHTML = `
-              <div class="empty">⚠️ Missing element: <strong>${component}</strong></div>
-            `;
+  <div class="wrong">❌ Wrong part: <strong class="expected">${humanWrong}</strong></div>
+  <div class="location">📍 Location: <strong>${location.trim()}</strong></div>
+  <div class="expected">✅ Expected: <strong class="expected">${humanExpected}</strong></div>
+  <div><em>Expected code: ${expectedClean}</em></div>
+`;
             output.appendChild(div);
           }
-        });
 
-        if (found === 0) {
-          output.innerHTML = `<p>Nessuna parte mancante trovata 🎉</p>`;
+        // "is empty"
+        } else if (lower.includes(" is empty")) {
+          const cleanMatch = line.match(/\[None\]\s+(.*?)\s+is empty/i);
+          const component = cleanMatch ? cleanMatch[1].trim() : line.trim();
+          const humanLabel = humanizePartName(component);
+
+          found++;
+          const div = document.createElement("div");
+          div.className = "result";
+          div.innerHTML = `
+  <div class="empty">⚠️ Empty component: <strong class="expected">${humanLabel}</strong></div>
+  <div><em>Code: ${component}</em></div>
+`;
+
+          output.appendChild(div);
         }
-      };
+      });
 
+      if (found === 0) {
+        output.innerHTML = `<p>No missing or broken parts found 🎉</p>`;
+      }
+    }
+
+    function handleFile(file) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        processLog(e.target.result);
+      };
       reader.readAsText(file);
+    }
+
+    fileInput.addEventListener("change", function () {
+      if (this.files[0]) {
+        handleFile(this.files[0]);
+      }
+    });
+
+    dropzone.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      dropzone.classList.add("dragover");
+    });
+
+    dropzone.addEventListener("dragleave", () => {
+      dropzone.classList.remove("dragover");
+    });
+
+    dropzone.addEventListener("drop", (e) => {
+      e.preventDefault();
+      dropzone.classList.remove("dragover");
+      if (e.dataTransfer.files.length > 0) {
+        handleFile(e.dataTransfer.files[0]);
+      }
     });
   </script>
 
-  <div class="footer">By Fox</div>
+  <div class="footer"></div>
 </body>
 </html>
