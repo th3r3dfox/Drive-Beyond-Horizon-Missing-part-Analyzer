@@ -90,97 +90,142 @@
     const dropzone = document.getElementById("dropzone");
     const fileInput = document.getElementById("logInput");
     const output = document.getElementById("output");
-
-    // Human-readable name mapping
+  
+    const wikiBase = "https://drivebeyondhorizons.wiki.gg/wiki/";
+  
     function humanizePartName(partName) {
-      const replacements = {
+      const map = {
         "BP_UAZ_Light_05_C": "Front right light for UAZ Jeep",
         "BP_Tucker_Light_IR_C": "Right rear light for Tucker",
         "BP_Tucker_Light_IL_C": "Left rear light for Tucker",
-        "BP_Musgoat_Light_Top_C": "Top light for Musgoat",
         "BP_Tucker_Light_IL_C_2139086842": "Rear left light (instance) for Tucker",
-        // Add more translations as needed
+        "BP_Musgoat_Light_Top_C": "Top light for Musgoat",
       };
-      return replacements[partName] || partName;
+      return map[partName] || null;
     }
+  
+    function extractVehicleName(partName) {
+  // Caso 1: Classico blueprint Unreal (BP_Tucker_Light_05_C)
+  let match = partName.match(/BP_([A-Za-z0-9]+)_/i);
+  if (match) return match[1];
 
+  // Caso 2: Codici tipo UAZCar_C_2147... o MusgoatCar_C_...
+  match = partName.match(/([A-Za-z]+)Car/i);
+  if (match) return match[1];
+
+  return null;
+}
+
+  
+    function extractLogDate(line) {
+      const match = line.match(/\[(\d{4}\.\d{2}\.\d{2})-/);
+      return match ? match[1] : "Unknown date";
+    }
+  
+    function createWikiLink(vehicle) {
+      if (vehicle) {
+        return `<a class="wiki-link" href="${wikiBase + encodeURIComponent(vehicle)}" target="_blank">🔗 View ${vehicle} Wiki</a>`;
+      }
+      return "";
+    }
+  
     function processLog(text) {
       const lines = text.split(/\r?\n/);
       output.innerHTML = "";
       let found = 0;
-
+  
       lines.forEach(line => {
         const lower = line.toLowerCase();
+        const { date: logDate, time: logTime } = extractLogDateTime(line);
 
-        // "wrong part"
+  
         if (lower.includes("wrong part")) {
-          const match = line.match(/(.*?) is a wrong part on: (.*?) expected: (.*)/i);
-          if (match) {
-            found++;
-            const [_, wrongPart, location, expected] = match;
-            const wrongClean = wrongPart.trim();
-            const expectedClean = expected.trim();
-            const humanWrong = humanizePartName(wrongClean);
-            const humanExpected = humanizePartName(expectedClean);
+  const contentMatch = line.match(/\[None\]\s+(.*?)$/i);
+  const content = contentMatch ? contentMatch[1] : line;
 
-            const div = document.createElement("div");
-            div.className = "result";
-            div.innerHTML = `
-  <div class="wrong">❌ Wrong part: <strong class="expected">${humanWrong}</strong></div>
-  <div class="location">📍 Location: <strong>${location.trim()}</strong></div>
-  <div class="expected">✅ Expected: <strong class="expected">${humanExpected}</strong></div>
-  <div><em>Expected code: ${expectedClean}</em></div>
-`;
-            output.appendChild(div);
-          }
+  const match = content.match(/(.*?) is a wrong part on: (.*?) expected: (.*)/i);
+  if (match) {
+    found++;
+    const [_, wrongCode, location, expectedCode] = match;
+    const wrongTrim = wrongCode.trim();
+    const expectedTrim = expectedCode.trim();
+    const expectedDesc = humanizePartName(expectedTrim) || expectedTrim;
+    const vehicle = extractVehicleName(wrongTrim);
+    const { date: logDate, time: logTime } = extractLogDateTime(line);
 
-        // "is empty"
-        } else if (lower.includes(" is empty")) {
-          const cleanMatch = line.match(/\[None\]\s+(.*?)\s+is empty/i);
-          const component = cleanMatch ? cleanMatch[1].trim() : line.trim();
-          const humanLabel = humanizePartName(component);
-
+    const div = document.createElement("div");
+    div.className = "result";
+    div.innerHTML = `
+      <div><strong>🚗 Vehicle:</strong> ${vehicle || "Unknown"}</div>
+      <div><strong>📅 Log date:</strong> ${logDate} 🕒 ${logTime}</div>
+      <div class="wrong">❌ Wrong part: <strong>${wrongTrim}</strong></div>
+      <div class="location">📍 Location: <strong>${location.trim()}</strong></div>
+      <div class="expected">✅ Expected: <span class="expected">${expectedDesc}</span></div>
+      <div><em>Code: ${expectedTrim}</em> ${createWikiLink(extractVehicleName(expectedTrim))}</div>
+    `;
+    output.appendChild(div);
+  }
+}
+ else if (lower.includes(" is empty")) {
+          const match = line.match(/\[None\]\s+(.*?)\s+is empty/i);
+          const component = match ? match[1].trim() : line.trim();
+          const readable = humanizePartName(component) || component;
+          const vehicle = extractVehicleName(component);
+  
           found++;
           const div = document.createElement("div");
           div.className = "result";
           div.innerHTML = `
-  <div class="empty">⚠️ Empty component: <strong class="expected">${humanLabel}</strong></div>
-  <div><em>Code: ${component}</em></div>
-`;
+            <div><strong>🚗 Vehicle:</strong> ${vehicle || "Unknown"}</div>
+            <div><strong>📅 Log date:</strong> ${logDate} 🕒 ${logTime}</div>
 
+            <div class="empty">⚠️ Empty component: <span class="expected">${readable}</span></div>
+            <div><em>Code: ${component}</em> ${createWikiLink(vehicle)}</div>
+          `;
           output.appendChild(div);
         }
       });
-
+  
       if (found === 0) {
         output.innerHTML = `<p>No missing or broken parts found 🎉</p>`;
       }
     }
-
+  
     function handleFile(file) {
       const reader = new FileReader();
-      reader.onload = function (e) {
-        processLog(e.target.result);
-      };
+      reader.onload = e => processLog(e.target.result);
       reader.readAsText(file);
     }
 
-    fileInput.addEventListener("change", function () {
-      if (this.files[0]) {
-        handleFile(this.files[0]);
+    function extractLogDateTime(line) {
+  const match = line.match(/\[(\d{4}\.\d{2}\.\d{2})-(\d{2})\.(\d{2})\.(\d{2})/);
+  if (match) {
+    const [, date, h, m, s] = match;
+    return {
+      date,
+      time: `${h}:${m}:${s}`
+    };
+  }
+  return { date: "Unknown", time: "Unknown" };
+}
+
+  
+    fileInput.addEventListener("change", () => {
+      if (fileInput.files[0]) {
+        handleFile(fileInput.files[0]);
       }
     });
-
-    dropzone.addEventListener("dragover", (e) => {
+  
+    dropzone.addEventListener("dragover", e => {
       e.preventDefault();
       dropzone.classList.add("dragover");
     });
-
+  
     dropzone.addEventListener("dragleave", () => {
       dropzone.classList.remove("dragover");
     });
-
-    dropzone.addEventListener("drop", (e) => {
+  
+    dropzone.addEventListener("drop", e => {
       e.preventDefault();
       dropzone.classList.remove("dragover");
       if (e.dataTransfer.files.length > 0) {
@@ -188,6 +233,8 @@
       }
     });
   </script>
+  
+  
 
   <div class="footer"></div>
 </body>
