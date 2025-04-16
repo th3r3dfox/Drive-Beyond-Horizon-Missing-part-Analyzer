@@ -83,13 +83,26 @@
     <small>📁 Recommended path: <code>C:\Users\"user"\AppData\Local\DriveBeyondHorizons\Saved\Logs</code></small>
     <input type="file" id="logInput" accept=".log,.txt">
   </div>
-
+  <label for="vehicleSelect">🚗 Filter by vehicle:</label>
+  <select id="vehicleSelect" style="margin-bottom: 1rem;"></select>
+  
   <div id="output"></div>
 
   <script>
     const dropzone = document.getElementById("dropzone");
     const fileInput = document.getElementById("logInput");
     const output = document.getElementById("output");
+
+    const wikiNames = {
+  triclops: "Triclops",
+  uaz: "Uaz",
+  musgoat: "Musgoat",
+  pontiac: "Bonphiac",
+  
+
+  // Aggiungi qui tutti i nomi ufficiali che usi nella wiki
+};
+
   
     const wikiBase = "https://drivebeyondhorizons.wiki.gg/wiki/";
   
@@ -123,73 +136,129 @@
     }
   
     function createWikiLink(vehicle) {
-      if (vehicle) {
-        return `<a class="wiki-link" href="${wikiBase + encodeURIComponent(vehicle)}" target="_blank">🔗 View ${vehicle} Wiki</a>`;
-      }
-      return "";
-    }
+  if (!vehicle) return "";
+  const key = vehicle.toLowerCase();
+  const formatted = wikiNames[key] || (vehicle.charAt(0).toUpperCase() + vehicle.slice(1).toLowerCase());
+  return `<a class="wiki-link" href="${wikiBase + encodeURIComponent(formatted)}" target="_blank">🔗 View ${formatted} Wiki</a>`;
+}
+
   
     function processLog(text) {
-      const lines = text.split(/\r?\n/);
-      output.innerHTML = "";
-      let found = 0;
-  
-      lines.forEach(line => {
-        const lower = line.toLowerCase();
-        const { date: logDate, time: logTime } = extractLogDateTime(line);
+  const lines = text.split(/\r?\n/);
+  output.innerHTML = "";
+  let found = 0;
+  let shownEntries = new Set();
+  let vehicleLogs = new Map();
+  let vehicleSelect = document.getElementById("vehicleSelect");
+  vehicleSelect.innerHTML = '<option value="all">All vehicles</option>';
 
-  
-        if (lower.includes("wrong part")) {
-  const contentMatch = line.match(/\[None\]\s+(.*?)$/i);
-  const content = contentMatch ? contentMatch[1] : line;
-
-  const match = content.match(/(.*?) is a wrong part on: (.*?) expected: (.*)/i);
-  if (match) {
-    found++;
-    const [_, wrongCode, location, expectedCode] = match;
-    const wrongTrim = wrongCode.trim();
-    const expectedTrim = expectedCode.trim();
-    const expectedDesc = humanizePartName(expectedTrim) || expectedTrim;
-    const vehicle = extractVehicleName(wrongTrim);
+  lines.forEach(line => {
+    const lower = line.toLowerCase();
     const { date: logDate, time: logTime } = extractLogDateTime(line);
 
-    const div = document.createElement("div");
-    div.className = "result";
-    div.innerHTML = `
-      <div><strong>🚗 Vehicle:</strong> ${vehicle || "Unknown"}</div>
-      <div><strong>📅 Log date:</strong> ${logDate} 🕒 ${logTime}</div>
-      <div class="wrong">❌ Wrong part: <strong>${wrongTrim}</strong></div>
-      <div class="location">📍 Location: <strong>${location.trim()}</strong></div>
-      <div class="expected">✅ Expected: <span class="expected">${expectedDesc}</span></div>
-      <div><em>Code: ${expectedTrim}</em> ${createWikiLink(extractVehicleName(expectedTrim))}</div>
-    `;
-    output.appendChild(div);
-  }
-}
- else if (lower.includes(" is empty")) {
-          const match = line.match(/\[None\]\s+(.*?)\s+is empty/i);
-          const component = match ? match[1].trim() : line.trim();
-          const readable = humanizePartName(component) || component;
-          const vehicle = extractVehicleName(component);
-  
-          found++;
-          const div = document.createElement("div");
-          div.className = "result";
-          div.innerHTML = `
-            <div><strong>🚗 Vehicle:</strong> ${vehicle || "Unknown"}</div>
-            <div><strong>📅 Log date:</strong> ${logDate} 🕒 ${logTime}</div>
+    // --- WRONG PART ---
+    if (lower.includes("wrong part")) {
+      const contentMatch = line.match(/\[None\]\s+(.*?)$/i);
+      const content = contentMatch ? contentMatch[1] : line;
+      const match = content.match(/(.*?) is a wrong part on: (.*?) expected: (.*)/i);
+      if (match) {
+        const [_, wrongCode, location, expectedCode] = match;
+        const wrongTrim = wrongCode.trim();
+        const expectedTrim = expectedCode.trim();
 
-            <div class="empty">⚠️ Empty component: <span class="expected">${readable}</span></div>
-            <div><em>Code: ${component}</em> ${createWikiLink(vehicle)}</div>
-          `;
-          output.appendChild(div);
-        }
-      });
-  
-      if (found === 0) {
-        output.innerHTML = `<p>No missing or broken parts found 🎉</p>`;
+        const entryKey = `wrong|${wrongTrim}|${location.trim()}|${expectedTrim}`;
+        if (shownEntries.has(entryKey)) return;
+        shownEntries.add(entryKey);
+
+        const expectedDesc = humanizePartName(expectedTrim) || expectedTrim;
+        const vehicle = extractVehicleName(wrongTrim);
+
+        const html = `
+          <div class="wrong">❌ Wrong part: <strong>${wrongTrim}</strong></div>
+          <div class="location">📍 Location: <strong>${location.trim()}</strong></div>
+          <div class="expected">✅ Expected: <span class="expected">${expectedDesc}</span></div>
+          <div><em>Code: ${expectedTrim}</em> ${createWikiLink(extractVehicleName(expectedTrim))}</div>
+          <div><strong>🚗 Vehicle:</strong> ${vehicle || "Unknown"}</div>
+          <div><strong>📅 Log date:</strong> ${logDate} 🕒 ${logTime}</div>
+        `;
+
+        if (!vehicleLogs.has(vehicle)) vehicleLogs.set(vehicle, []);
+        vehicleLogs.get(vehicle).push(html);
+        if (vehicle && !Array.from(vehicleSelect.options).some(opt => opt.value === vehicle)) {
+  const opt = document.createElement("option");
+  opt.value = vehicle;
+  opt.textContent = vehicle;
+  vehicleSelect.appendChild(opt);
+}
+
+        found++;
       }
     }
+
+    // --- EMPTY PART ---
+    else if (lower.includes(" is empty")) {
+      if (!line.includes("[None]") || line.includes("SteamCore") || line.includes("SocketsAPI") || line.includes("LogSteam")) {
+        return;
+      }
+
+      const match = line.match(/\[None\]\s+(.*?)\s+is empty/i);
+      const component = match ? match[1].trim() : line.trim();
+
+      const entryKey = `empty|${component}`;
+      if (shownEntries.has(entryKey)) return;
+      shownEntries.add(entryKey);
+
+      const readable = humanizePartName(component) || component;
+      const vehicle = extractVehicleName(component);
+
+      const html = `
+        <div class="empty">⚠️ Empty component: <span class="expected">${readable}</span></div>
+        <div><em>Code: ${component}</em> ${createWikiLink(vehicle)}</div>
+        <div><strong>🚗 Vehicle:</strong> ${vehicle || "Unknown"}</div>
+        <div><strong>📅 Log date:</strong> ${logDate} 🕒 ${logTime}</div>
+      `;
+
+      if (!vehicleLogs.has(vehicle)) vehicleLogs.set(vehicle, []);
+      vehicleLogs.get(vehicle).push(html);
+      if (vehicle && !Array.from(vehicleSelect.options).some(opt => opt.value === vehicle)) {
+  const opt = document.createElement("option");
+  opt.value = vehicle;
+  opt.textContent = vehicle;
+  vehicleSelect.appendChild(opt);
+}
+
+      found++;
+    }
+  });
+
+  vehicleSelect.onchange = () => {
+    const selected = vehicleSelect.value;
+    output.innerHTML = "";
+    if (selected === "all") {
+      for (const logs of vehicleLogs.values()) {
+        logs.forEach(html => {
+          const div = document.createElement("div");
+          div.className = "result";
+          div.innerHTML = html;
+          output.appendChild(div);
+        });
+      }
+    } else if (vehicleLogs.has(selected)) {
+      vehicleLogs.get(selected).forEach(html => {
+        const div = document.createElement("div");
+        div.className = "result";
+        div.innerHTML = html;
+        output.appendChild(div);
+      });
+    }
+  };
+
+  vehicleSelect.dispatchEvent(new Event("change"));
+
+  if (found === 0) {
+    output.innerHTML = `<p>No missing or broken parts found 🎉</p>`;
+  }
+}
   
     function handleFile(file) {
       const reader = new FileReader();
