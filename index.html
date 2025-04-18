@@ -98,7 +98,13 @@
   uaz: "Uaz",
   musgoat: "Musgoat",
   pontiac: "Bonphiac",
-  
+  lada: "Dada",
+  c15 : "C18",
+  golf : "Golf",
+  gtr : "GTR",
+  ifa : "IFA",
+  Poyopa :"Poyopa",
+  trailer : "Trailer"
 
   // Aggiungi qui tutti i nomi ufficiali che usi nella wiki
 };
@@ -116,20 +122,24 @@
       };
       return map[partName] || null;
     }
-  
-    function extractVehicleName(partName) {
-  // Caso 1: Classico blueprint Unreal (BP_Tucker_Light_05_C)
-  let match = partName.match(/BP_([A-Za-z0-9]+)_/i);
-  if (match) return match[1];
 
-  // Caso 2: Codici tipo UAZCar_C_2147... o MusgoatCar_C_...
-  match = partName.match(/([A-Za-z]+)Car/i);
-  if (match) return match[1];
+    const ignoredVehicles = ["horizongt"];
+
+    function extractVehicleName(partName) {
+  // Match nomi tipo: BP_Tucker_Light_05_C, BP_PoyopaFrontBumper_C
+  const match = partName.match(/BP_([A-Z][a-z]+)([A-Z][a-z]+)?/);
+  if (match) {
+    // Se ci sono 2 parole (es. Poyopa + FrontBumper), prendiamo solo la prima (veicolo)
+    return match[1]; // "Poyopa", "Tucker", ecc.
+  }
+
+  // Match nomi tipo: MusgoatCar_C_123
+  const carMatch = partName.match(/([A-Za-z]+)Car/i);
+  if (carMatch) return carMatch[1];
 
   return null;
 }
 
-  
     function extractLogDate(line) {
       const match = line.match(/\[(\d{4}\.\d{2}\.\d{2})-/);
       return match ? match[1] : "Unknown date";
