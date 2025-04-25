@@ -22,30 +22,31 @@
       text-align: center;
       transition: 0.2s ease;
       margin-bottom: 1.5rem;
+      margin-top: 1.5rem;
     }
 
     .result-row {
-  margin-bottom: 1.5rem;
-  border: 1px solid #333;
-  border-radius: 8px;
-  background-color: #1e1e1e;
-  padding: 1rem;
-}
-.result-info strong {
-  color: #fff;
-}
-.result-image img {
-  box-shadow: 0 0 6px rgba(0,0,0,0.5);
-}
+      margin-bottom: 1.5rem;
+      border: 1px solid #333;
+      border-radius: 8px;
+      background-color: #1e1e1e;
+      padding: 1rem;
+    }
 
-.result-image img:hover {
-  opacity: 0.85;
-  cursor: pointer;
-  transform: scale(1.03);
-  transition: 0.2s ease;
-}
+    .result-info strong {
+      color: #fff;
+    }
 
+    .result-image img {
+      box-shadow: 0 0 6px rgba(0,0,0,0.5);
+    }
 
+    .result-image img:hover {
+      opacity: 0.85;
+      cursor: pointer;
+      transform: scale(1.03);
+      transition: 0.2s ease;
+    }
 
     .dropzone.dragover {
       background-color: #1f1f1f;
@@ -98,48 +99,153 @@
     }
 
     #vehicleSelect {
-  font-size: 1.1rem;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  background-color: #1a1a1a;
-  color: #eee;
-  border: 1px solid #444;
+      font-size: 1.1rem;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      background-color: #1a1a1a;
+      color: #eee;
+      border: 1px solid #444;
+    }
+
+    .result-row.achievement {
+      border-left: 4px solid #50fa7b;
+      background-color: #162916;
+      color: #baffc9;
+      font-weight: bold;
+    }
+
+    .container {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 1.5rem;
+    }
+
+    .completed-vehicles {
+    background-color: #1e1e1e;
+    border: 1px solid #333;
+    padding: 1rem;
+    border-radius: 8px;
+    color: #eee;
+  }
+  .completed-vehicles h3 {
+    color: #50fa7b;
+    margin-top: 0;
+  }
+  .vehicle-list {
+  columns: 2;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.vehicle-list li {
+  margin-bottom: 0.5rem;
+}
+.vehicle-list label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: default;
 }
 
-.result-row.achievement {
-  border-left: 4px solid #50fa7b;
-  background-color: #162916;
-  color: #baffc9;
-  font-weight: bold;
+/* nascondo lo stile nativo e creo un quadratino vuoto */
+.vehicle-list input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #555;
+  border-radius: 3px;
+  background: transparent;
+  position: relative;
+  pointer-events: none;
+  margin: 0;
 }
 
+/* disegno la spunta arancione quando c'è checked */
+.vehicle-list input[type="checkbox"]:checked::before {
+  content: "";
+  position: absolute;
+  top: 1px;
+  left: 4px;
+  width: 4px;
+  height: 8px;
+  border: solid #ff6600;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+/* Top bar: titolo a sinistra, link a destra */
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.2rem; /* spazio sotto la top bar */
+}
+
+/* Stile dei link in header */
+.header-links a {
+  color: #ff6600;
+  margin-left: 1rem;
+  text-decoration: none;
+  font-weight: 500;
+}
+.header-links a:hover {
+  text-decoration: underline;
+}
 
 
   </style>
 </head>
 <body>
-  <h1>🔍 Missing Part Analyzer By Fox13_  🇮🇹 - Drive Beyond Horizon</h1>
-  <div style="background-color: #1e1e1e; border: 1px solid #333; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
-    <h3 style="margin-top: 0; color: #ffaa00;">ℹ️ How logs work</h3>
-    <p style="margin: 0.5rem 0;">
-      The <code>.log</code> file updates <strong>only when a part is attached</strong> to a vehicle.  
-      If you remove a part, <strong>nothing will be logged</strong>.
-    </p>
-    <p style="margin: 0.5rem 0;">
-      To detect missing parts:
-      <ul style="margin-left: 1rem;">
-        <li>Detach and then <strong>re-attach</strong> a part</li>
-        <li>The log will report <strong>only one missing part at a time</strong></li>
-        <li>Until that part is fixed, <strong>no other issues</strong> will be shown</li>
+  <header class="top-bar">
+    <h1>🔍 Missing Part Analyzer By Fox13_ 🇮🇹 - Drive Beyond Horizon</h1>
+    <div class="header-links">
+      <a href="https://discord.gg/YWfqcGDcQh" target="_blank" rel="noopener">Official Discord</a>
+      <a href="https://drivebeyondhorizons.wiki.gg/" target="_blank" rel="noopener">Wiki</a>
+    </div>
+  </header>
+
+  <div class="container">
+    <div style="background-color: #1e1e1e; border: 1px solid #333; padding: 1rem; border-radius: 8px;">
+      <h3 style="margin-top: 0; color: #ffaa00;">ℹ️ How logs work</h3>
+      <p style="margin: 0.5rem 0;">
+        The <code>.log</code> file updates <strong>only when a part is attached</strong> to a vehicle.
+        If you remove a part, <strong>nothing will be logged</strong>.
+      </p>
+      <p style="margin: 0.5rem 0;">
+        To detect missing parts:
+        <ul style="margin-left: 1rem;">
+          <li>Detach and then <strong>re-attach</strong> a part</li>
+          <li>The log will report <strong>only one missing part at a time</strong></li>
+          <li>Until that part is fixed, <strong>no other issues</strong> will be shown</li>
+        </ul>
+      </p>
+      <p style="margin: 0.5rem 0;">
+        🔁 If you want to refresh the log after testing, you must <strong>close and reopen the game</strong>.
+      </p>
+      <p style="margin-top: 1rem; font-size: 0.9rem; color: #bbb;">
+        This explanation is based on my personal experience and may not be 100% accurate.
+      </p>
+    </div>
+
+    <div class="completed-vehicles">
+      <h3>✅ Vehicles Fully Implemented on the Website</h3>
+      <ul class="vehicle-list">
+        <li><label><input type="checkbox" checked  disabled> Dada</label></li>
+        <li><label><input type="checkbox" checked  disabled> Poyopa</label></li>
+        <li><label><input type="checkbox" disabled> Bonphiac</label></li>
+        <li><label><input type="checkbox" disabled> Musgoat</label></li>
+        <li><label><input type="checkbox" disabled> TriClops</label></li>
+        <li><label><input type="checkbox" disabled> GTR</label></li>
+        <li><label><input type="checkbox" disabled> Golf</label></li>
+        <li><label><input type="checkbox" disabled> UAZ</label></li>
+        <li><label><input type="checkbox" disabled> C15</label></li>
+        <li><label><input type="checkbox" disabled> IFA</label></li>
+        <li><label><input type="checkbox" disabled> Trailer</label></li>
       </ul>
-    </p>
-    <p style="margin: 0.5rem 0;">
-      🔁 If you want to refresh the log after testing, you must <strong>close and reopen the game</strong>.
-    </p>
-    <p style="margin-top: 1rem; font-size: 0.9rem; color: #bbb;">
-      This explanation is based on my personal experience and may not be 100% accurate.
-    </p>
+    </div>
   </div>
+
   
   
 
@@ -227,11 +333,105 @@ const wikiPartImages = {
   "PoyopaCar_C.CarStarterV2":"https://drivebeyondhorizons.wiki.gg/images/3/3f/Poyopa_ignition.png",// chiave avvio
   "PoyopaCar_C.CarGlassBack":"https://drivebeyondhorizons.wiki.gg/images/c/c9/PoyopaRearWindow.png",//vetro postyeriore
   "PoyopaCar_C.CarGlassFront":"https://drivebeyondhorizons.wiki.gg/images/9/9c/PoyopaFrontWindow.png",// vetro anteriore
+  "PoyopaCar_C.CarWheelFL":"https://drivebeyondhorizons.wiki.gg/images/6/6a/Poyopa_Wheel_Rim.png",//ruota anteriore sinistra
+  "PoyopaCar_C.CarWheelBL":"https://drivebeyondhorizons.wiki.gg/images/6/6a/Poyopa_Wheel_Rim.png",//ruota posteriore sinistra
+  "PoyopaCar_C.CarWheelFR":"https://drivebeyondhorizons.wiki.gg/images/6/6a/Poyopa_Wheel_Rim.png",//ruota anteriore destra
+  "PoyopaCar_C.CarWheelBR":"https://drivebeyondhorizons.wiki.gg/images/6/6a/Poyopa_Wheel_Rim.png",//ruota posteriore destra
+  "Rim15_2_C.CarWheelyV2":"https://drivebeyondhorizons.wiki.gg/images/7/7e/Poyopa_Tire.png",// copertone poyopa
+  "PoyopaCar_C.CarSeatbeltAttachV22":"https://drivebeyondhorizons.wiki.gg/images/a/aa/DadaSeatbeltLower.png",// attacco cintura passegero
+  "PoyopaCar_C.CarSeatbeltV22":"https://drivebeyondhorizons.wiki.gg/images/4/42/DadaSeatbeltUpper.png",//triangolo cintura passeggero
+  "PoyopaCar_C.CarSeatbeltV21":"https://drivebeyondhorizons.wiki.gg/images/4/42/DadaSeatbeltUpper.png",//trianfolo cintura guidtore
+  "PoyopaCar_C.CarSeatbeltAttachV21":"https://drivebeyondhorizons.wiki.gg/images/a/aa/DadaSeatbeltLower.png",//attacco cintura guidtore
+
+  //DADA
+  "LadaCarNew_C.CarMovableHood":"https://drivebeyondhorizons.wiki.gg/images/c/c2/DadaHood.png",// cofano
+  "LadaCarNew_C.CarBatteryV2":"https://drivebeyondhorizons.wiki.gg/images/0/01/DadaBattery50A.png",// batteria
+  "LadaCarNew_C.CarMotorV2":"https://drivebeyondhorizons.wiki.gg/images/e/e0/I4engine.png",//motore
+  "LadaCarNew_C.CarRadiatorV2":"https://drivebeyondhorizons.wiki.gg/images/3/3c/DadaRadiator.png",//radiatore
+  "LadaCarNew_C.CarEquipableV26":"https://drivebeyondhorizons.wiki.gg/images/5/58/GoatLicensePlate.png",//targa anteriore
+  "LadaCarNew_C.CarEquipableV22":"https://drivebeyondhorizons.wiki.gg/images/1/12/DadaFrontBumper.png",//parafango anteriore
+  "LadaCarNew_C.CarLightsV3_HL_TS":"https://drivebeyondhorizons.wiki.gg/images/8/8b/DadaHeadlight.png",//luce anteriore sinistra
+  "LadaCarNew_C.CarLightsV3_HL_TS1":"https://drivebeyondhorizons.wiki.gg/images/8/8b/DadaHeadlight.png",//luce anteriore destra
+  "LadaCarNew_C.CarLightsV3_TS1":"https://drivebeyondhorizons.wiki.gg/images/4/40/DadaTurnSignalR.png",//freccia anteriore destra
+  "LadaCarNew_C.CarLightsV3_TS":"https://drivebeyondhorizons.wiki.gg/images/b/bb/DadaTurnSignalL.png",//freccia anteriore sinistra
+  "LadaCarNew_C.CarEquipableV21":"https://drivebeyondhorizons.wiki.gg/images/0/09/DadaGrill.png",//griglia anteriore
+  "LadaDoor_FL_C.CarEquipableV3":"https://drivebeyondhorizons.wiki.gg/images/c/c6/DadaMirrorLeft.png",//specchietto sinistro guidatore
+  "LadaCarNew_C.CarDoorFL":"https://drivebeyondhorizons.wiki.gg/images/3/35/DadaFrontDoorL.png",//portiera anteriore sinistra
+  "LadaCarNew_C.CarDoorRL":"https://drivebeyondhorizons.wiki.gg/images/f/f0/DadaRearDoorL.png",//portiera posteriore sinistra
+  "LadaCarNew_C.CarMovableBoot":"https://drivebeyondhorizons.wiki.gg/images/c/cb/DadaTrunkLid.png",//bagagliaio
+  "LadaCarNew_C.CarLightsV3_Interior1":"https://drivebeyondhorizons.wiki.gg/images/e/e9/DadaInteriorLight.png",//luce bagagliaio sinistra
+  "LadaCarNew_C.CarLightsV3_Interior2":"https://drivebeyondhorizons.wiki.gg/images/e/e9/DadaInteriorLight.png",//luce bagagliaio destra
+  "LadaCarNew_C.CarLightsV3_RL_TS_Rev":"https://drivebeyondhorizons.wiki.gg/images/5/59/DadaTailLightL.png",//luce posteriore sinistra
+  "LadaCarNew_C.CarLightsV3_RL_TS_Rev1":"https://drivebeyondhorizons.wiki.gg/images/6/6c/DadaTailLightR.png?",//luce posteriore destra
+  "LadaCarNew_C.CarEquipableV27":"https://drivebeyondhorizons.wiki.gg/images/5/58/GoatLicensePlate.png",//targa posteriore
+  "LadaCarNew_C.CarEquipableV23":"https://drivebeyondhorizons.wiki.gg/images/c/cf/DadaRearBumper.png",//paraurti posteriore
+  "LadaCarNew_C.CarMovableGasHatch":"https://drivebeyondhorizons.wiki.gg/images/2/24/DadaFuelTankLid.png",//coperchio benzina
+  "LadaCarNew_C.CarDoorRR":"https://drivebeyondhorizons.wiki.gg/images/e/e4/DadaRearDoorR.png",//portiera posteriore destra
+  "LadaCarNew_C.CarDoorFR":"https://drivebeyondhorizons.wiki.gg/images/d/d4/DadaFrontDoorR.png",//portiera anteriore destra
+  "LadaDoor_FR_C.CarEquipableV3":"https://drivebeyondhorizons.wiki.gg/images/7/7d/DadaMirrorRight.png",//specchietto destro
+  "LadaCarNew_C.CarGlassFront":"https://drivebeyondhorizons.wiki.gg/images/2/25/DadaWindshield.png",//vetro anteriore
+  "LadaCarNew_C.CarGlassBack":"https://drivebeyondhorizons.wiki.gg/images/c/c9/DadaRearWindow.png",//vetro posteriore
+  "LadaCarNew_C.CarPedalSpeed":"https://drivebeyondhorizons.wiki.gg/images/e/e2/DadaPedal.png",//accelleratore
+  "LadaCarNew_C.CarPedalBrake":"https://drivebeyondhorizons.wiki.gg/images/e/e2/DadaPedal.png",//freno
+  "LadaCarNew_C.CarPedalClutch":"https://drivebeyondhorizons.wiki.gg/images/e/e2/DadaPedal.png",//frizione
+  "LadaCarNew_C.CarSteeringWheelV2":"https://drivebeyondhorizons.wiki.gg/images/b/b8/DadaSteeringWheel.png",//volante
+  "LadaCarNew_C.CarDashboardV2":"https://drivebeyondhorizons.wiki.gg/images/e/e6/DadaDashboard.png",//dashboard
+  "LadaCarNew_C.CarGearShifterV2":"https://drivebeyondhorizons.wiki.gg/images/d/db/DadaShifter.png",//cambio
+  "LadaCarNew_C.CarHandbrakeV2":"https://drivebeyondhorizons.wiki.gg/images/0/01/Handbrake.png",//freno a mano
+  "LadaCarNew_C.CarRadioV2":"https://drivebeyondhorizons.wiki.gg/images/e/e9/CarRadio.png",//radio
+  "LadaCarNew_C.CarSeatbeltV21":"https://drivebeyondhorizons.wiki.gg/images/4/42/DadaSeatbeltUpper.png",//triangolo cintura di sicurezza passeggero
+  "LadaCarNew_C.CarSeatbeltAttachV21":"https://drivebeyondhorizons.wiki.gg/images/a/aa/DadaSeatbeltLower.png",//attacco cintura di sicurezza passeggero
+  "LadaCarNew_C.CarSeatPassenger":"https://drivebeyondhorizons.wiki.gg/images/9/9f/DadaSeat.png",//sedile passeggero
+  "LadaCarNew_C.CarSeatPassenger1":"https://drivebeyondhorizons.wiki.gg/images/9/9f/DadaSeat.png",//sedile posteriore destro
+  "LadaCarNew_C.CarSeatDriver":"https://drivebeyondhorizons.wiki.gg/images/9/9f/DadaSeat.png",//sedile guidatore
+  "LadaCarNew_C.CarSeatbeltAttachV2":"https://drivebeyondhorizons.wiki.gg/images/a/aa/DadaSeatbeltLower.png",//attacco cintura di sicurezza guidatore
+  "LadaCarNew_C.CarSeatbeltV2":"https://drivebeyondhorizons.wiki.gg/images/4/42/DadaSeatbeltUpper.png",//triangolo cintura di sicurezza guidatore
+  "LadaCarNew_C.CarSeatPassenger2":"https://drivebeyondhorizons.wiki.gg/images/9/9f/DadaSeat.png",//sedile posteriore sinistro
+  "LadaCarNew_C.CarLightsV3_Interior":"https://drivebeyondhorizons.wiki.gg/images/e/e9/DadaInteriorLight.png",//luce abitacolo interna
+  "LadaCarNew_C.CarWheelBL":"https://drivebeyondhorizons.wiki.gg/images/3/33/DadaWheelRim.png",// cerchio ruota posteriore sinistra
+  "Rim15_C.CarWheelyV2":"https://drivebeyondhorizons.wiki.gg/images/f/f3/DadaTire.png",//copertone 
+  "Rim15_C.CarEquipableRimDeco":"https://drivebeyondhorizons.wiki.gg/images/a/aa/Hubcap.png",//coppilia cerchio 
+  "LadaCarNew_C.CarWheelFL":"https://drivebeyondhorizons.wiki.gg/images/3/33/DadaWheelRim.png",//cerchio ruota frontale sinistra
+  "LadaCarNew_C.CarWheelFR":"https://drivebeyondhorizons.wiki.gg/images/3/33/DadaWheelRim.png",//cerchio ruota frontale destra
+  "LadaCarNew_C.CarWheelBR":"https://drivebeyondhorizons.wiki.gg/images/3/33/DadaWheelRim.png",//cerchio ruota posteriore destra
+  "LadaCarNew_C.CarStarterV2":"https://drivebeyondhorizons.wiki.gg/images/4/49/Ignition.png",// chiave
+
+
   "":"",//
   "":"",//
   "":"",//
   "":"",//
   "":"",//
+  "":"",//
+  "":"",//
+  "":"",//
+  "":"",//
+  "":"",//
+  "":"",//
+  "":"",//
+  "":"",//
+  "":"",//
+  "":"",//
+  "":"",//
+  "":"",//
+  "":"",//
+  "":"",//
+  "":"",//
+  "":"",//
+  "":"",//
+  "":"",//
+  "":"",//
+  "":"",//
+  "":"",//
+  "":"",//
+  "":"",//
+  "":"",//
+  "":"",//
+  "":"",//
+  "":"",//
+  "":"",//
+  "":"",//
+
 
 };
 
@@ -241,9 +441,13 @@ const vehicleAliases = {
   gtrv2: "gtr",
   poyopanew: "poyopa",
   bonphiac: "pontiac",
-  Rim16: ""
-  // aggiungi altri alias se ne trovi
+  Rim16: "",
+  lada: "dada",
+  "rim15_c": "lada",
+  "rim15_2_c": "poyopa"
 };
+
+
 
 
 function getWikiImageUrl(code) {
@@ -262,25 +466,30 @@ function getWikiImageUrl(code) {
 
 function extractVehicleName(partCode) {
   if (!partCode) return null;
-
   const lowercaseCode = partCode.toLowerCase();
 
-  // Cerca corrispondenza con chiavi esatte
+  // Cerca corrispondenza con chiavi esatte wikiNames
   for (const key of Object.keys(wikiNames)) {
     if (lowercaseCode.includes(key)) return key;
   }
 
-  // Cerca corrispondenze per alias
+  // CORREZIONE: Prima corrispondenza più lunga esatta possibile dagli aliases
+  let matchedAlias = null;
   for (const alias in vehicleAliases) {
-    if (lowercaseCode.includes(alias)) return vehicleAliases[alias];
+    if (lowercaseCode.includes(alias.toLowerCase())) {
+      if (!matchedAlias || alias.length > matchedAlias.length) {
+        matchedAlias = alias;
+      }
+    }
   }
+  if (matchedAlias) return vehicleAliases[matchedAlias];
 
-  // Regex fallback classico
+  // Regex fallback invariato
   const patterns = [
-    /bp_([a-z0-9]+)_/,        // es. BP_Uaz_Light_05_C
-    /([a-z0-9]+)car/,         // es. MusgoatCar
-    /^([a-z0-9]+)_/,          // es. musgoat_rooflight
-    /^([a-z0-9]+)/            // fallback: prima parola
+    /bp_([a-z0-9]+)_/,
+    /([a-z0-9]+)car/,
+    /^([a-z0-9]+)_/,
+    /^([a-z0-9]+)/
   ];
 
   for (let pattern of patterns) {
@@ -297,8 +506,10 @@ function extractVehicleName(partCode) {
 
 
 
+
     function humanizePartName(partName) {
       const map = {
+        //poyopa
         "PoyopaMotor_C.CarTurboV2": "Turbo",
   "Bp_PoyopaDoor_FR_C.CarEquipableV2": "Right Door Panel",
   "BP_PoyopaDoor_FL_C.CarEquipableV2": "Left Door Panel",
@@ -341,7 +552,70 @@ function extractVehicleName(partCode) {
   "PoyopaCar_C.CarRadioV2": "Radio",
   "PoyopaCar_C.CarStarterV2": "Ignition Key",
   "PoyopaCar_C.CarGlassBack": "Rear Window",
-  "PoyopaCar_C.CarGlassFront": "Front Windshield"
+  "PoyopaCar_C.CarGlassFront": "Front Windshield",
+  "PoyopaCar_C.CarWheelFL":"Left Front Wheel Rim",//ruota anteriore sinistra
+  "PoyopaCar_C.CarWheelBL":"Left Rear Wheel Rim",//ruota posteriore sinistra
+  "PoyopaCar_C.CarWheelFR":"Right Front Wheel Rim",//ruota anteriore destra
+  "PoyopaCar_C.CarWheelBR":"Right Rear Wheel Rim",//ruota posteriore destra
+  "Rim15_2_C.CarWheelyV2":"Tire",// copertone poyopa
+
+  "PoyopaCar_C.CarSeatbeltAttachV22":"Passenger Seatbelt Latch",// attacco cintura passegero
+  "PoyopaCar_C.CarSeatbeltV22":"Passenger Seatbelt Anchor Point",//triangolo cintura passeggero
+  "PoyopaCar_C.CarSeatbeltV21":"Driver Seatbelt Anchor Point",//trianfolo cintura guidtore
+  "PoyopaCar_C.CarSeatbeltAttachV21":"Driver Seatbelt Latch",//attacco cintura guidtore
+
+  //DADA
+  "LadaCarNew_C.CarMovableHood": "Hood",
+  "LadaCarNew_C.CarBatteryV2": "Battery",
+  "LadaCarNew_C.CarMotorV2": "Engine",
+  "LadaCarNew_C.CarRadiatorV2": "Radiator",
+  "LadaCarNew_C.CarEquipableV26": "Front License Plate",
+  "LadaCarNew_C.CarEquipableV22": "Front Fender",
+  "LadaCarNew_C.CarLightsV3_HL_TS": "Left Headlight",
+  "LadaCarNew_C.CarLightsV3_HL_TS1": "Right Headlight",
+  "LadaCarNew_C.CarLightsV3_TS1": "Right Front Turn Signal",
+  "LadaCarNew_C.CarLightsV3_TS": "Left Front Turn Signal",
+  "LadaCarNew_C.CarEquipableV21": "Front Grill",
+  "LadaDoor_FL_C.CarEquipableV3": "Left Driver Mirror",
+  "LadaCarNew_C.CarDoorFL": "Front Left Door",
+  "LadaCarNew_C.CarDoorRL": "Rear Left Door",
+  "LadaCarNew_C.CarMovableBoot": "Trunk",
+  "LadaCarNew_C.CarLightsV3_Interior1": "Left Trunk Light",
+  "LadaCarNew_C.CarLightsV3_Interior2": "Right Trunk Light",
+  "LadaCarNew_C.CarLightsV3_RL_TS_Rev": "Left Rear Light",
+  "LadaCarNew_C.CarLightsV3_RL_TS_Rev1": "Right Rear Light",
+  "LadaCarNew_C.CarEquipableV27": "Rear License Plate",
+  "LadaCarNew_C.CarEquipableV23": "Rear Bumper",
+  "LadaCarNew_C.CarMovableGasHatch": "Fuel Cap",
+  "LadaCarNew_C.CarDoorRR": "Rear Right Door",
+  "LadaCarNew_C.CarDoorFR": "Front Right Door",
+  "LadaDoor_FR_C.CarEquipableV3": "Right Mirror",
+  "LadaCarNew_C.CarGlassFront": "Front Windshield",
+  "LadaCarNew_C.CarGlassBack": "Rear Window",
+  "LadaCarNew_C.CarPedalSpeed": "Accelerator Pedal",
+  "LadaCarNew_C.CarPedalBrake": "Brake Pedal",
+  "LadaCarNew_C.CarPedalClutch": "Clutch Pedal",
+  "LadaCarNew_C.CarSteeringWheelV2": "Steering Wheel",
+  "LadaCarNew_C.CarDashboardV2": "Dashboard",
+  "LadaCarNew_C.CarGearShifterV2": "Gear Shifter",
+  "LadaCarNew_C.CarHandbrakeV2": "Handbrake",
+  "LadaCarNew_C.CarRadioV2": "Radio",
+  "LadaCarNew_C.CarSeatbeltV21": "Passenger Seatbelt Anchor Point",
+  "LadaCarNew_C.CarSeatbeltAttachV21": "Passenger Seatbelt Latch",
+  "LadaCarNew_C.CarSeatPassenger": "Passenger Seat",
+  "LadaCarNew_C.CarSeatPassenger1": "Rear Right Seat",
+  "LadaCarNew_C.CarSeatDriver": "Driver Seat",
+  "LadaCarNew_C.CarSeatbeltAttachV2": "Driver Seatbelt Latch",
+  "LadaCarNew_C.CarSeatbeltV2": "Driver Seatbelt Anchor Point",
+  "LadaCarNew_C.CarSeatPassenger2": "Rear Left Seat",
+  "LadaCarNew_C.CarLightsV3_Interior": "Interior Cabin Light",
+  "LadaCarNew_C.CarWheelBL": "Left Rear Wheel Rim",
+  "Rim15_C.CarWheelyV2": "Tire",
+  "Rim15_C.CarEquipableRimDeco": "Wheel Cap",
+  "LadaCarNew_C.CarWheelFL": "Left Front Wheel Rim",
+  "LadaCarNew_C.CarWheelFR": "Right Front Wheel Rim",
+  "LadaCarNew_C.CarWheelBR": "Right Rear Wheel Rim",
+  "LadaCarNew_C.CarStarterV2":"Ignition Key"
         
       };
       return map[partName] || null;
@@ -484,38 +758,6 @@ function processLog(text) {
 
       found++;
     }
-    else if (lower.includes("all part there you unlock:")) {
-  const match = line.match(/unlock:\s*(\w+)/i);
-  if (match) {
-    const achievement = match[1];
-    const vehicle = extractVehicleName(achievement);
-    const uniqueKey = `achievement|${achievement}`;
-
-    if (!shownEntries.has(uniqueKey)) {
-      shownEntries.add(uniqueKey);
-
-      const html = `
-        <div class="result-row" style="border-left: 4px solid #50fa7b; background-color: #162916; color: #baffc9;">
-          <strong>🎉 ${wikiNames[vehicle] || vehicle || "Unknown"} completed!</strong><br>
-          Achievement unlocked: <code>${achievement}</code>
-        </div>
-      `;
-
-      if (!vehicleLogs.has(vehicle)) vehicleLogs.set(vehicle, []);
-      vehicleLogs.get(vehicle).push(html);
-
-      if (isVehicleAllowed(vehicle) && !Array.from(vehicleSelect.options).some(opt => opt.value === vehicle)) {
-        const opt = document.createElement("option");
-        opt.value = vehicle;
-        opt.textContent = wikiNames[vehicle] || vehicle;
-        vehicleSelect.appendChild(opt);
-      }
-
-      found++;
-    }
-  }
-}
-
   });
 
   // Ordina le opzioni del dropdown (eccetto "All vehicles")
