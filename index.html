@@ -106,11 +106,42 @@
   border: 1px solid #444;
 }
 
+.result-row.achievement {
+  border-left: 4px solid #50fa7b;
+  background-color: #162916;
+  color: #baffc9;
+  font-weight: bold;
+}
+
+
 
   </style>
 </head>
 <body>
   <h1>🔍 Missing Part Analyzer By Fox13_  🇮🇹 - Drive Beyond Horizon</h1>
+  <div style="background-color: #1e1e1e; border: 1px solid #333; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+    <h3 style="margin-top: 0; color: #ffaa00;">ℹ️ How logs work</h3>
+    <p style="margin: 0.5rem 0;">
+      The <code>.log</code> file updates <strong>only when a part is attached</strong> to a vehicle.  
+      If you remove a part, <strong>nothing will be logged</strong>.
+    </p>
+    <p style="margin: 0.5rem 0;">
+      To detect missing parts:
+      <ul style="margin-left: 1rem;">
+        <li>Detach and then <strong>re-attach</strong> a part</li>
+        <li>The log will report <strong>only one missing part at a time</strong></li>
+        <li>Until that part is fixed, <strong>no other issues</strong> will be shown</li>
+      </ul>
+    </p>
+    <p style="margin: 0.5rem 0;">
+      🔁 If you want to refresh the log after testing, you must <strong>close and reopen the game</strong>.
+    </p>
+    <p style="margin-top: 1rem; font-size: 0.9rem; color: #bbb;">
+      This explanation is based on my personal experience and may not be 100% accurate.
+    </p>
+  </div>
+  
+  
 
   <div class="dropzone" id="dropzone">
     Drag and drop your `.log` file here or <label for="logInput" class="browse-label">click to browse</label>.<br>
@@ -453,6 +484,38 @@ function processLog(text) {
 
       found++;
     }
+    else if (lower.includes("all part there you unlock:")) {
+  const match = line.match(/unlock:\s*(\w+)/i);
+  if (match) {
+    const achievement = match[1];
+    const vehicle = extractVehicleName(achievement);
+    const uniqueKey = `achievement|${achievement}`;
+
+    if (!shownEntries.has(uniqueKey)) {
+      shownEntries.add(uniqueKey);
+
+      const html = `
+        <div class="result-row" style="border-left: 4px solid #50fa7b; background-color: #162916; color: #baffc9;">
+          <strong>🎉 ${wikiNames[vehicle] || vehicle || "Unknown"} completed!</strong><br>
+          Achievement unlocked: <code>${achievement}</code>
+        </div>
+      `;
+
+      if (!vehicleLogs.has(vehicle)) vehicleLogs.set(vehicle, []);
+      vehicleLogs.get(vehicle).push(html);
+
+      if (isVehicleAllowed(vehicle) && !Array.from(vehicleSelect.options).some(opt => opt.value === vehicle)) {
+        const opt = document.createElement("option");
+        opt.value = vehicle;
+        opt.textContent = wikiNames[vehicle] || vehicle;
+        vehicleSelect.appendChild(opt);
+      }
+
+      found++;
+    }
+  }
+}
+
   });
 
   // Ordina le opzioni del dropdown (eccetto "All vehicles")
