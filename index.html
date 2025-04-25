@@ -24,6 +24,29 @@
       margin-bottom: 1.5rem;
     }
 
+    .result-row {
+  margin-bottom: 1.5rem;
+  border: 1px solid #333;
+  border-radius: 8px;
+  background-color: #1e1e1e;
+  padding: 1rem;
+}
+.result-info strong {
+  color: #fff;
+}
+.result-image img {
+  box-shadow: 0 0 6px rgba(0,0,0,0.5);
+}
+
+.result-image img:hover {
+  opacity: 0.85;
+  cursor: pointer;
+  transform: scale(1.03);
+  transition: 0.2s ease;
+}
+
+
+
     .dropzone.dragover {
       background-color: #1f1f1f;
       border-color: #00c3ff;
@@ -76,7 +99,7 @@
   </style>
 </head>
 <body>
-  <h1>🔍 Missing Part Analyzer By Fox 🇮🇹 - Drive Beyond Horizon</h1>
+  <h1>🔍 Missing Part Analyzer By Fox13_ 🇮🇹 - Drive Beyond Horizon</h1>
 
   <div class="dropzone" id="dropzone">
     Drag and drop your `.log` file here or <label for="logInput" class="browse-label">click to browse</label>.<br>
@@ -94,8 +117,8 @@
     const output = document.getElementById("output");
 
     const wikiNames = {
-  triclops: "Triclops",
-  uaz: "Uaz",
+  triclops: "TriClops",
+  uaz: "UAZ",
   musgoat: "Musgoat",
   pontiac: "Bonphiac",
   lada: "Dada",
@@ -103,15 +126,62 @@
   golf : "Golf",
   gtr : "GTR",
   ifa : "IFA",
-  Poyopa :"Poyopa",
+  poyopa :"Poyopa",
   trailer : "Trailer"
 
   // Aggiungi qui tutti i nomi ufficiali che usi nella wiki
 };
 
+const wikiPartImages = {
+  "PoyopaCar_C_2146705893.CarSeatbeltV21": "https://drivebeyondhorizons.wiki.gg/images/8/87/Poyopa_front_right_door.png"
+};
+
+function getWikiImageUrl(code) {
+  for (const key in wikiPartImages) {
+    if (code.includes(key)) return wikiPartImages[key];
+  }
+  return null;
+}
+
   
     const wikiBase = "https://drivebeyondhorizons.wiki.gg/wiki/";
   
+    function isVehicleAllowed(vehicle) {
+  return vehicle && Object.keys(wikiNames).includes(vehicle.toLowerCase());
+}
+
+
+function extractVehicleName(partCode) {
+  if (!partCode) return null;
+
+  const lowercaseCode = partCode.toLowerCase();
+
+  // 1. Regex comuni per nomi asset
+  const patterns = [
+    /bp_([a-z0-9]+)_/,        // es. BP_Uaz_Light_05_C
+    /([a-z0-9]+)car/,         // es. MusgoatCar
+    /^([a-z0-9]+)_/,          // es. musgoat_rooflight
+    /^([a-z0-9]+)/            // fallback: prima parola
+  ];
+
+  for (let pattern of patterns) {
+    const match = lowercaseCode.match(pattern);
+    if (match && isVehicleAllowed(match[1])) {
+      return match[1];
+    }
+  }
+
+  // 2. Fuzzy fallback: nome veicolo contenuto nella stringa
+  for (const key of Object.keys(wikiNames)) {
+    if (lowercaseCode.includes(key)) {
+      return key;
+    }
+  }
+
+  return null;
+}
+
+
     function humanizePartName(partName) {
       const map = {
         "BP_UAZ_Light_05_C": "Front right light for UAZ Jeep",
@@ -124,21 +194,6 @@
     }
 
     const ignoredVehicles = ["horizongt"];
-
-    function extractVehicleName(partName) {
-  // Match nomi tipo: BP_Tucker_Light_05_C, BP_PoyopaFrontBumper_C
-  const match = partName.match(/BP_([A-Z][a-z]+)([A-Z][a-z]+)?/);
-  if (match) {
-    // Se ci sono 2 parole (es. Poyopa + FrontBumper), prendiamo solo la prima (veicolo)
-    return match[1]; // "Poyopa", "Tucker", ecc.
-  }
-
-  // Match nomi tipo: MusgoatCar_C_123
-  const carMatch = partName.match(/([A-Za-z]+)Car/i);
-  if (carMatch) return carMatch[1];
-
-  return null;
-}
 
     function extractLogDate(line) {
       const match = line.match(/\[(\d{4}\.\d{2}\.\d{2})-/);
@@ -153,7 +208,7 @@
 }
 
   
-    function processLog(text) {
+function processLog(text) {
   const lines = text.split(/\r?\n/);
   output.innerHTML = "";
   let found = 0;
@@ -175,31 +230,40 @@
         const [_, wrongCode, location, expectedCode] = match;
         const wrongTrim = wrongCode.trim();
         const expectedTrim = expectedCode.trim();
-
-        const entryKey = `wrong|${wrongTrim}|${location.trim()}|${expectedTrim}`;
-        if (shownEntries.has(entryKey)) return;
-        shownEntries.add(entryKey);
+        const vehicle = extractVehicleName(location);
+        const uniqueKey = `wrong|${vehicle}|${wrongTrim}|${expectedTrim}|${location.trim()}`;
+        if (shownEntries.has(uniqueKey)) return;
+        shownEntries.add(uniqueKey);
 
         const expectedDesc = humanizePartName(expectedTrim) || expectedTrim;
-        const vehicle = extractVehicleName(wrongTrim);
+        const imageUrl = getWikiImageUrl(expectedTrim);
 
         const html = `
-          <div class="wrong">❌ Wrong part: <strong>${wrongTrim}</strong></div>
-          <div class="location">📍 Location: <strong>${location.trim()}</strong></div>
-          <div class="expected">✅ Expected: <span class="expected">${expectedDesc}</span></div>
-          <div><em>Code: ${expectedTrim}</em> ${createWikiLink(extractVehicleName(expectedTrim))}</div>
-          <div><strong>🚗 Vehicle:</strong> ${vehicle || "Unknown"}</div>
-          <div><strong>📅 Log date:</strong> ${logDate} 🕒 ${logTime}</div>
+          <div class="result-row" style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem;">
+            <div class="result-info" style="flex: 1;">
+              <div><strong>🚗 Vehicle:</strong> ${wikiNames[vehicle] || vehicle || "Unknown"}</div>
+              <div class="wrong">❌ Wrong part: <strong>${wrongTrim}</strong></div>
+              <div class="expected">✅ Expected: <strong>${expectedDesc}</strong></div>
+              <div><em>${createWikiLink(vehicle)}</em></div>
+            </div>
+            ${imageUrl ? `
+              <div class="result-image" style="flex-shrink: 0;">
+                <a href="${wikiBase + encodeURIComponent(wikiNames[vehicle] || vehicle)}" target="_blank">
+                  <img src="${imageUrl}" alt="Part image" style="max-width:160px; border-radius:8px;">
+                </a>
+              </div>` : ""}
+          </div>
         `;
 
         if (!vehicleLogs.has(vehicle)) vehicleLogs.set(vehicle, []);
         vehicleLogs.get(vehicle).push(html);
-        if (vehicle && !Array.from(vehicleSelect.options).some(opt => opt.value === vehicle)) {
-  const opt = document.createElement("option");
-  opt.value = vehicle;
-  opt.textContent = vehicle;
-  vehicleSelect.appendChild(opt);
-}
+
+        if (isVehicleAllowed(vehicle) && !Array.from(vehicleSelect.options).some(opt => opt.value === vehicle)) {
+          const opt = document.createElement("option");
+          opt.value = vehicle;
+          opt.textContent = wikiNames[vehicle] || vehicle;
+          vehicleSelect.appendChild(opt);
+        }
 
         found++;
       }
@@ -213,34 +277,50 @@
 
       const match = line.match(/\[None\]\s+(.*?)\s+is empty/i);
       const component = match ? match[1].trim() : line.trim();
-
-      const entryKey = `empty|${component}`;
-      if (shownEntries.has(entryKey)) return;
-      shownEntries.add(entryKey);
+      const vehicle = extractVehicleName(component);
+      const uniqueKey = `empty|${vehicle}|${component}`;
+      if (shownEntries.has(uniqueKey)) return;
+      shownEntries.add(uniqueKey);
 
       const readable = humanizePartName(component) || component;
-      const vehicle = extractVehicleName(component);
+      const imageUrl = getWikiImageUrl(component);
 
       const html = `
-        <div class="empty">⚠️ Empty component: <span class="expected">${readable}</span></div>
-        <div><em>Code: ${component}</em> ${createWikiLink(vehicle)}</div>
-        <div><strong>🚗 Vehicle:</strong> ${vehicle || "Unknown"}</div>
-        <div><strong>📅 Log date:</strong> ${logDate} 🕒 ${logTime}</div>
+        <div class="result-row" style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem;">
+          <div class="result-info" style="flex: 1;">
+            <div><strong>🚗 Vehicle:</strong> ${wikiNames[vehicle] || vehicle || "Unknown"}</div>
+            <div class="empty">⚠️ Empty component: <strong>${readable}</strong></div>
+            <div><em>${createWikiLink(vehicle)}</em></div>
+          </div>
+          ${imageUrl ? `
+            <div class="result-image" style="flex-shrink: 0;">
+              <a href="${wikiBase + encodeURIComponent(wikiNames[vehicle] || vehicle)}" target="_blank">
+                <img src="${imageUrl}" alt="Part image" style="max-width:160px; border-radius:8px;">
+              </a>
+            </div>` : ""}
+        </div>
       `;
 
       if (!vehicleLogs.has(vehicle)) vehicleLogs.set(vehicle, []);
       vehicleLogs.get(vehicle).push(html);
-      if (vehicle && !Array.from(vehicleSelect.options).some(opt => opt.value === vehicle)) {
-  const opt = document.createElement("option");
-  opt.value = vehicle;
-  opt.textContent = vehicle;
-  vehicleSelect.appendChild(opt);
-}
+
+      if (isVehicleAllowed(vehicle) && !Array.from(vehicleSelect.options).some(opt => opt.value === vehicle)) {
+        const opt = document.createElement("option");
+        opt.value = vehicle;
+        opt.textContent = wikiNames[vehicle] || vehicle;
+        vehicleSelect.appendChild(opt);
+      }
 
       found++;
     }
   });
 
+  // Ordina le opzioni del dropdown (eccetto "All vehicles")
+  const options = [...vehicleSelect.options].slice(1);
+  options.sort((a, b) => a.textContent.localeCompare(b.textContent));
+  options.forEach(opt => vehicleSelect.appendChild(opt));
+
+  // Dropdown change logic
   vehicleSelect.onchange = () => {
     const selected = vehicleSelect.value;
     output.innerHTML = "";
@@ -269,6 +349,7 @@
     output.innerHTML = `<p>No missing or broken parts found 🎉</p>`;
   }
 }
+
   
     function handleFile(file) {
       const reader = new FileReader();
