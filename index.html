@@ -12,7 +12,7 @@
       padding: 2rem;
     }
     h1 {
-      color: #00c3ff;
+      color: #ff6600;
     }
 
     .dropzone {
@@ -49,7 +49,7 @@
 
     .dropzone.dragover {
       background-color: #1f1f1f;
-      border-color: #00c3ff;
+      border-color: #ff6600;
     }
 
     input[type="file"] {
@@ -88,7 +88,7 @@
 
     .browse-label {
       cursor: pointer;
-      color: #00c3ff;
+      color: #ff6600;
       text-decoration: underline;
     }
 
@@ -96,10 +96,20 @@
       color: #aaa;
       font-size: 0.9em;
     }
+
+    #vehicleSelect {
+  font-size: 1.1rem;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  background-color: #1a1a1a;
+  color: #eee;
+  border: 1px solid #444;
+}
+
   </style>
 </head>
 <body>
-  <h1>🔍 Missing Part Analyzer By Fox13_ 🇮🇹 - Drive Beyond Horizon</h1>
+  <h1>🔍 Missing Part Analyzer By Fox13_  🇮🇹 - Drive Beyond Horizon</h1>
 
   <div class="dropzone" id="dropzone">
     Drag and drop your `.log` file here or <label for="logInput" class="browse-label">click to browse</label>.<br>
@@ -133,15 +143,46 @@
 };
 
 const wikiPartImages = {
-  "PoyopaCar_C_2146705893.CarSeatbeltV21": "https://drivebeyondhorizons.wiki.gg/images/8/87/Poyopa_front_right_door.png"
+  // POYOPA
+  "PoyopaMotor_C.CarTurboV2": "https://drivebeyondhorizons.wiki.gg/images/b/b6/Turbo.png",  //turbo
+  "Bp_PoyopaDoor_FR_C.CarEquipableV2":"https://drivebeyondhorizons.wiki.gg/images/b/b5/DriveBeyondHorizons-Win64-Shipping_jCuH97w4MS.png", // pannello portiera destro
+  "BP_PoyopaDoor_FL_C.CarEquipableV2":"https://drivebeyondhorizons.wiki.gg/images/a/ae/DriveBeyondHorizons-Win64-Shipping_lsK0vUNezF.png", // pannello portiera sinistra
+  "PoyopaCar_C.CarBatteryV2":"https://drivebeyondhorizons.wiki.gg/images/0/01/DadaBattery50A.png", // batteria 
+  "PoyopaCar_C.CarDoorFL":"https://drivebeyondhorizons.wiki.gg/images/0/0e/Poyopa_front_left_door.png", // portiera sinistra
+  "PoyopaCar_C.CarSteeringWheelV2":"https://drivebeyondhorizons.wiki.gg/images/b/bd/PoyopaSteeringWheel.png", // volante
+  "PoyopaCar_C.CarMovableV2":"https://drivebeyondhorizons.wiki.gg/images/e/e2/DriveBeyondHorizons-Win64-Shipping_yxBdFnXKqT.png", // bagagliaio
+  "PoyopaCar_C.CarLightsV3_RL_TS_R":"https://drivebeyondhorizons.wiki.gg/images/a/aa/DriveBeyondHorizons-Win64-Shipping_NjVl0p6PEA.png", // luce dietro sinistra
+  "PoyopaCar_C.CarLightsV3_RL_TS_R1":"https://drivebeyondhorizons.wiki.gg/images/6/6e/DriveBeyondHorizons-Win64-Shipping_YGeVY76IJe.png", // luce dietro destra
+  "BP_PoyopaRollBar_C.CarLightsV3_HL1":"https://drivebeyondhorizons.wiki.gg/images/b/b3/DriveBeyondHorizons-Win64-Shipping_IAAAhU5Gk2.png", // luce roll bar
+  "BP_PoyopaRollBar_C.CarLightsV3_HL":"https://drivebeyondhorizons.wiki.gg/images/b/b3/DriveBeyondHorizons-Win64-Shipping_IAAAhU5Gk2.png", // luce roll bar
+  "PoyopaCar_C.CarEquipableV29":"https://drivebeyondhorizons.wiki.gg/images/5/5e/Imagem_2025-04-10_133750409.png", //roll bar
+  "PoyopaCar_C.CarDoorFR":"https://drivebeyondhorizons.wiki.gg/images/8/87/Poyopa_front_right_door.png", // portiera destra
+  "Bp_PoyopaDoor_FR_C.CarEquipableV3":"https://drivebeyondhorizons.wiki.gg/images/0/02/DriveBeyondHorizons-Win64-Shipping_2Xoha18d3S.png",// specchietto destro
+  "PoyopaCar_C.CarMovableHood":"https://drivebeyondhorizons.wiki.gg/images/1/19/Poyopa_hood.png",// cofano
+  "PoyopaCar_C.CarMovableGasHatch":"https://drivebeyondhorizons.wiki.gg/images/1/1c/Poyopa_fuel_tank_lid.png",// coperchio benzina
+  "PoyopaCar_C.CarEquipableCarpet1":"https://drivebeyondhorizons.wiki.gg/images/1/13/DriveBeyondHorizons-Win64-Shipping_9SYdlkj1Cy.png",//teppetino destro
+  "":"",//
+  "":"",//
+  "":"",//
+  "":"",//
 };
 
+const vehicleAliases = {
+  c18new: "c15",
+  c18: "c15",
+  gtrv2: "gtr",
+  poyopanew: "poyopa",
+  bonphiac: "pontiac",
+  Rim16: ""
+  // aggiungi altri alias se ne trovi
+};
+
+
 function getWikiImageUrl(code) {
-  for (const key in wikiPartImages) {
-    if (code.includes(key)) return wikiPartImages[key];
-  }
-  return null;
+  const normalized = normalizePartCode(code);
+  return wikiPartImages[normalized] || null;
 }
+
 
   
     const wikiBase = "https://drivebeyondhorizons.wiki.gg/wiki/";
@@ -156,7 +197,17 @@ function extractVehicleName(partCode) {
 
   const lowercaseCode = partCode.toLowerCase();
 
-  // 1. Regex comuni per nomi asset
+  // Cerca corrispondenza con chiavi esatte
+  for (const key of Object.keys(wikiNames)) {
+    if (lowercaseCode.includes(key)) return key;
+  }
+
+  // Cerca corrispondenze per alias
+  for (const alias in vehicleAliases) {
+    if (lowercaseCode.includes(alias)) return vehicleAliases[alias];
+  }
+
+  // Regex fallback classico
   const patterns = [
     /bp_([a-z0-9]+)_/,        // es. BP_Uaz_Light_05_C
     /([a-z0-9]+)car/,         // es. MusgoatCar
@@ -166,20 +217,16 @@ function extractVehicleName(partCode) {
 
   for (let pattern of patterns) {
     const match = lowercaseCode.match(pattern);
-    if (match && isVehicleAllowed(match[1])) {
-      return match[1];
-    }
-  }
-
-  // 2. Fuzzy fallback: nome veicolo contenuto nella stringa
-  for (const key of Object.keys(wikiNames)) {
-    if (lowercaseCode.includes(key)) {
-      return key;
+    if (match) {
+      const name = match[1];
+      if (wikiNames[name]) return name;
+      if (vehicleAliases[name]) return vehicleAliases[name];
     }
   }
 
   return null;
 }
+
 
 
     function humanizePartName(partName) {
@@ -207,6 +254,11 @@ function extractVehicleName(partCode) {
   return `<a class="wiki-link" href="${wikiBase + encodeURIComponent(formatted)}" target="_blank">🔗 View ${formatted} Wiki</a>`;
 }
 
+function normalizePartCode(code) {
+  if (!code) return "";
+  return code.replace(/_C_\d+/, "_C").trim();
+}
+
   
 function processLog(text) {
   const lines = text.split(/\r?\n/);
@@ -231,17 +283,22 @@ function processLog(text) {
         const wrongTrim = wrongCode.trim();
         const expectedTrim = expectedCode.trim();
         const vehicle = extractVehicleName(location);
-        const uniqueKey = `wrong|${vehicle}|${wrongTrim}|${expectedTrim}|${location.trim()}`;
+        const uniqueKey = `wrong|${vehicle}|${normalizePartCode(wrongTrim)}|${normalizePartCode(expectedTrim)}|${normalizePartCode(location)}`;
+
         if (shownEntries.has(uniqueKey)) return;
         shownEntries.add(uniqueKey);
 
         const expectedDesc = humanizePartName(expectedTrim) || expectedTrim;
-        const imageUrl = getWikiImageUrl(expectedTrim);
+        const imageUrl = getWikiImageUrl(normalizePartCode(expectedTrim));
+
 
         const html = `
           <div class="result-row" style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem;">
             <div class="result-info" style="flex: 1;">
-              <div><strong>🚗 Vehicle:</strong> ${wikiNames[vehicle] || vehicle || "Unknown"}</div>
+              <h2 style="margin-top: 0; font-size: 1.5rem; color: #ff6600;">
+  🚗 ${wikiNames[vehicle] || vehicle || "Unknown"}
+</h2>
+
               <div class="wrong">❌ Wrong part: <strong>${wrongTrim}</strong></div>
               <div class="expected">✅ Expected: <strong>${expectedDesc}</strong></div>
               <div><em>${createWikiLink(vehicle)}</em></div>
@@ -278,17 +335,24 @@ function processLog(text) {
       const match = line.match(/\[None\]\s+(.*?)\s+is empty/i);
       const component = match ? match[1].trim() : line.trim();
       const vehicle = extractVehicleName(component);
-      const uniqueKey = `empty|${vehicle}|${component}`;
+      const uniqueKey = `empty|${vehicle}|${normalizePartCode(component)}`;
+
+
       if (shownEntries.has(uniqueKey)) return;
       shownEntries.add(uniqueKey);
 
-      const readable = humanizePartName(component) || component;
-      const imageUrl = getWikiImageUrl(component);
+      const readable = humanizePartName(normalizePartCode(component)) || component;
+
+      const imageUrl = getWikiImageUrl(normalizePartCode(component));
+
 
       const html = `
         <div class="result-row" style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem;">
           <div class="result-info" style="flex: 1;">
-            <div><strong>🚗 Vehicle:</strong> ${wikiNames[vehicle] || vehicle || "Unknown"}</div>
+            <h2 style="margin-top: 0; font-size: 1.5rem; color: #ff6600;">
+  🚗 ${wikiNames[vehicle] || vehicle || "Unknown"}
+</h2>
+
             <div class="empty">⚠️ Empty component: <strong>${readable}</strong></div>
             <div><em>${createWikiLink(vehicle)}</em></div>
           </div>
