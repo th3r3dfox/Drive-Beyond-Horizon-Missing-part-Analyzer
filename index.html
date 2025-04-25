@@ -106,6 +106,7 @@
   border: 1px solid #444;
 }
 
+
   </style>
 </head>
 <body>
@@ -116,8 +117,16 @@
     <small>📁 Recommended path: <code>C:\Users\"user"\AppData\Local\DriveBeyondHorizons\Saved\Logs</code></small>
     <input type="file" id="logInput" accept=".log,.txt">
   </div>
-  <label for="vehicleSelect">🚗 Filter by vehicle:</label>
-  <select id="vehicleSelect" style="margin-bottom: 1rem;"></select>
+  <div style="display: flex; align-items: center; gap: 2rem; margin-bottom: 1rem;">
+    <label for="vehicleSelect">🚗 Filter by vehicle:</label>
+    <select id="vehicleSelect"></select>
+    <label>
+      <input type="checkbox" id="reverseToggle" style="margin-right: 0.5rem;">
+       Show newest entries first
+    </label>
+  </div>
+  
+  
   
   <div id="output"></div>
 
@@ -161,10 +170,38 @@ const wikiPartImages = {
   "PoyopaCar_C.CarMovableHood":"https://drivebeyondhorizons.wiki.gg/images/1/19/Poyopa_hood.png",// cofano
   "PoyopaCar_C.CarMovableGasHatch":"https://drivebeyondhorizons.wiki.gg/images/1/1c/Poyopa_fuel_tank_lid.png",// coperchio benzina
   "PoyopaCar_C.CarEquipableCarpet1":"https://drivebeyondhorizons.wiki.gg/images/1/13/DriveBeyondHorizons-Win64-Shipping_9SYdlkj1Cy.png",//teppetino destro
+  "PoyopaCar_C.CarSeatPassenger":"https://drivebeyondhorizons.wiki.gg/images/9/97/PoyopaSeat.png",//sedile passegero
+  "PoyopaCar_C.CarMovableV3":"https://drivebeyondhorizons.wiki.gg/images/1/18/DriveBeyondHorizons-Win64-Shipping_tnhAP1cVqV.png",//coperchio portaoogetti interno
+  "PoyopaCar_C.CarLightsV3_HL_TS1":"https://drivebeyondhorizons.wiki.gg/images/8/8e/DriveBeyondHorizons-Win64-Shipping_gU2CAQxFVv.png",//fanale destro
+  "PoyopaCar_C.CarBullbar":"https://drivebeyondhorizons.wiki.gg/images/7/76/Poyopa_Bull_Bar.png",//paraurti ferro
+  "PoyopaCar_C.CarEquipableV21":"https://drivebeyondhorizons.wiki.gg/images/1/1a/DriveBeyondHorizons-Win64-Shipping_JYLL9lvOwp.png",//griglia
+  "BP_PoyopaFrontBumper_C.CarLightsV3_TS_R":"https://drivebeyondhorizons.wiki.gg/images/3/36/DriveBeyondHorizons-Win64-Shipping_i5NPWrAtu7.png",// catarinfrangente destro anteriore
+  "BP_PoyopaFrontBumper_C.CarLightsV3_TS_L":"https://drivebeyondhorizons.wiki.gg/images/3/36/DriveBeyondHorizons-Win64-Shipping_i5NPWrAtu7.png",//catarinfrangente sinistro  anteriore
+  "PoyopaCar_C.CarEquipableV22":"https://drivebeyondhorizons.wiki.gg/images/4/49/DriveBeyondHorizons-Win64-Shipping_SXQiID2UOD.png",// forse parafango plastica
+  "BP_PoyopaFrontBumper_C.CarEquipableV2":"https://drivebeyondhorizons.wiki.gg/images/5/58/GoatLicensePlate.png",// forse targa
+  "PoyopaCar_C.CarLightsV3_HL_TS":"https://drivebeyondhorizons.wiki.gg/images/c/c6/DriveBeyondHorizons-Win64-Shipping_5OrbwAglaS.png",//fanale sinistro
+  "PoyopaCar_C.CarMotorV2":"https://drivebeyondhorizons.wiki.gg/images/3/34/Poyopa_engine.png",//motore
+  "PoyopaCar_C.CarRadiatorV2":"https://drivebeyondhorizons.wiki.gg/images/3/3c/DadaRadiator.png",//radiatore
+  "BP_PoyopaDoor_FL_C.CarEquipableV3":"https://drivebeyondhorizons.wiki.gg/images/6/69/DriveBeyondHorizons-Win64-Shipping_oZFuyJ4wzb.png",//specchietto sinistro
+  "PoyopaCar_C.CarEquipableCarpet":"https://drivebeyondhorizons.wiki.gg/images/e/ec/DriveBeyondHorizons-Win64-Shipping_tFDblvsAxD.png",// tappetino sinistro
+  "PoyopaCar_C.CarSeatDriver":"https://drivebeyondhorizons.wiki.gg/images/9/97/PoyopaSeat.png",//sedile guidatore
+  "PoyopaCar_C.CarPedalSpeed":"https://drivebeyondhorizons.wiki.gg/images/5/52/DriveBeyondHorizons-Win64-Shipping_C4GseaRNfn.png",// acceleratore 
+  "PoyopaCar_C.CarPedalBrake":"https://drivebeyondhorizons.wiki.gg/images/5/52/DriveBeyondHorizons-Win64-Shipping_C4GseaRNfn.png",//freno
+  "PoyopaCar_C.CarPedalV2":"https://drivebeyondhorizons.wiki.gg/images/5/52/DriveBeyondHorizons-Win64-Shipping_C4GseaRNfn.png",//frizione
+  "PoyopaCar_C.CarEquipableV2":"https://drivebeyondhorizons.wiki.gg/images/d/dd/PoyopaDashboard.png",// dashboard
+  "PoyopaCar_C.CarGearShifterV2":"https://drivebeyondhorizons.wiki.gg/images/e/e4/Imagem_2025-04-10_135454872.png",// cambio
+  "PoyopaCar_C.CarHandbrakeV2":"https://drivebeyondhorizons.wiki.gg/images/b/b5/Poyopa_handbrake.png",//freno a mano
+  "PoyopaCar_C.CarMovableV4":"https://drivebeyondhorizons.wiki.gg/images/8/89/Poyopa_Center_Console_Lid.png",// console lid
+  "PoyopaCar_C.CarRadioV2":"https://drivebeyondhorizons.wiki.gg/images/e/e9/CarRadio.png?9de599",//radio
+  "PoyopaCar_C.CarStarterV2":"https://drivebeyondhorizons.wiki.gg/images/3/3f/Poyopa_ignition.png",// chiave avvio
+  "PoyopaCar_C.CarGlassBack":"https://drivebeyondhorizons.wiki.gg/images/c/c9/PoyopaRearWindow.png",//vetro postyeriore
+  "PoyopaCar_C.CarGlassFront":"https://drivebeyondhorizons.wiki.gg/images/9/9c/PoyopaFrontWindow.png",// vetro anteriore
   "":"",//
   "":"",//
   "":"",//
   "":"",//
+  "":"",//
+
 };
 
 const vehicleAliases = {
@@ -231,11 +268,50 @@ function extractVehicleName(partCode) {
 
     function humanizePartName(partName) {
       const map = {
-        "BP_UAZ_Light_05_C": "Front right light for UAZ Jeep",
-        "BP_Tucker_Light_IR_C": "Right rear light for Tucker",
-        "BP_Tucker_Light_IL_C": "Left rear light for Tucker",
-        "BP_Tucker_Light_IL_C_2139086842": "Rear left light (instance) for Tucker",
-        "BP_Musgoat_Light_Top_C": "Top light for Musgoat",
+        "PoyopaMotor_C.CarTurboV2": "Turbo",
+  "Bp_PoyopaDoor_FR_C.CarEquipableV2": "Right Door Panel",
+  "BP_PoyopaDoor_FL_C.CarEquipableV2": "Left Door Panel",
+  "PoyopaCar_C.CarBatteryV2": "Battery",
+  "PoyopaCar_C.CarDoorFL": "Left Door",
+  "PoyopaCar_C.CarSteeringWheelV2": "Steering Wheel",
+  "PoyopaCar_C.CarMovableV2": "Trunk Lid",
+  "PoyopaCar_C.CarLightsV3_RL_TS_R": "Left Rear Light",
+  "PoyopaCar_C.CarLightsV3_RL_TS_R1": "Right Rear Light",
+  "BP_PoyopaRollBar_C.CarLightsV3_HL1": "Rollbar Light",
+  "BP_PoyopaRollBar_C.CarLightsV3_HL": "Rollbar Light",
+  "PoyopaCar_C.CarEquipableV29": "Roll Bar",
+  "PoyopaCar_C.CarDoorFR": "Right Door",
+  "Bp_PoyopaDoor_FR_C.CarEquipableV3": "Right Mirror",
+  "PoyopaCar_C.CarMovableHood": "Hood",
+  "PoyopaCar_C.CarMovableGasHatch": "Fuel Cap",
+  "PoyopaCar_C.CarEquipableCarpet1": "Right Floor Mat",
+  "PoyopaCar_C.CarSeatPassenger": "Passenger Seat",
+  "PoyopaCar_C.CarMovableV3": "Glovebox Lid",
+  "PoyopaCar_C.CarLightsV3_HL_TS1": "Right Headlight",
+  "PoyopaCar_C.CarBullbar": "Metal Bumper",
+  "PoyopaCar_C.CarEquipableV21": "Front Grill",
+  "BP_PoyopaFrontBumper_C.CarLightsV3_TS_R": "Right Front Reflector",
+  "BP_PoyopaFrontBumper_C.CarLightsV3_TS_L": "Left Front Reflector",
+  "PoyopaCar_C.CarEquipableV22": "Plastic Fender (Maybe)",
+  "BP_PoyopaFrontBumper_C.CarEquipableV2": "License Plate (Maybe)",
+  "PoyopaCar_C.CarLightsV3_HL_TS": "Left Headlight",
+  "PoyopaCar_C.CarMotorV2": "Engine",
+  "PoyopaCar_C.CarRadiatorV2": "Radiator",
+  "BP_PoyopaDoor_FL_C.CarEquipableV3": "Left Mirror",
+  "PoyopaCar_C.CarEquipableCarpet": "Left Floor Mat",
+  "PoyopaCar_C.CarSeatDriver": "Driver Seat",
+  "PoyopaCar_C.CarPedalSpeed": "Gas Pedal",
+  "PoyopaCar_C.CarPedalBrake": "Brake Pedal",
+  "PoyopaCar_C.CarPedalV2": "Clutch Pedal",
+  "PoyopaCar_C.CarEquipableV2": "Dashboard",
+  "PoyopaCar_C.CarGearShifterV2": "Gear Shifter",
+  "PoyopaCar_C.CarHandbrakeV2": "Handbrake",
+  "PoyopaCar_C.CarMovableV4": "Center Console Lid",
+  "PoyopaCar_C.CarRadioV2": "Radio",
+  "PoyopaCar_C.CarStarterV2": "Ignition Key",
+  "PoyopaCar_C.CarGlassBack": "Rear Window",
+  "PoyopaCar_C.CarGlassFront": "Front Windshield"
+        
       };
       return map[partName] || null;
     }
@@ -389,25 +465,38 @@ function processLog(text) {
     const selected = vehicleSelect.value;
     output.innerHTML = "";
     if (selected === "all") {
-      for (const logs of vehicleLogs.values()) {
-        logs.forEach(html => {
-          const div = document.createElement("div");
-          div.className = "result";
-          div.innerHTML = html;
-          output.appendChild(div);
-        });
-      }
-    } else if (vehicleLogs.has(selected)) {
-      vehicleLogs.get(selected).forEach(html => {
-        const div = document.createElement("div");
-        div.className = "result";
-        div.innerHTML = html;
-        output.appendChild(div);
-      });
+  let allLogs = [...vehicleLogs.values()].flat();
+  if (document.getElementById("reverseToggle").checked) {
+    allLogs = allLogs.reverse();
+  }
+  allLogs.forEach(html => {
+    const div = document.createElement("div");
+    div.className = "result";
+    div.innerHTML = html;
+    output.appendChild(div);
+  });
+}
+ else if (vehicleLogs.has(selected)) {
+      let entries = vehicleLogs.get(selected);
+if (document.getElementById("reverseToggle").checked) {
+  entries = [...entries].reverse();
+}
+entries.forEach(html => {
+  const div = document.createElement("div");
+  div.className = "result";
+  div.innerHTML = html;
+  output.appendChild(div);
+});
+
     }
   };
 
   vehicleSelect.dispatchEvent(new Event("change"));
+  document.getElementById("reverseToggle").addEventListener("change", () => {
+  vehicleSelect.dispatchEvent(new Event("change"));
+});
+
+
 
   if (found === 0) {
     output.innerHTML = `<p>No missing or broken parts found 🎉</p>`;
