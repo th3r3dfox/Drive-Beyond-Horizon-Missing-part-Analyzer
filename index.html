@@ -4,26 +4,39 @@
   <meta charset="UTF-8">
   <title>Log Analyzer - Drive Beyond Horizon</title>
   <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #121212;
-      color: #eee;
-      margin: 0;
-      padding: 2rem;
-    }
+
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: #121212;
+  color: #eee;
+  margin: 0;
+  padding: 0 1rem; /* niente padding laterale che rompe il layout */
+  box-sizing: border-box;
+}
     h1 {
       color: #ff6600;
     }
 
     .dropzone {
-      border: 2px dashed #555;
-      border-radius: 8px;
-      padding: 2rem;
-      text-align: center;
-      transition: 0.2s ease;
-      margin-bottom: 1.5rem;
-      margin-top: 1.5rem;
-    }
+  width: 100%;
+  max-width: 100%;
+  border: 2px dashed #555;
+  border-radius: 12px;
+  background-color: #1e1e1e;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  font-size: 1rem;
+  transition: background-color 0.3s, border-color 0.3s;
+  margin: 2rem 0;
+  box-sizing: border-box;
+}
 
     .result-row {
       margin-bottom: 1.5rem;
@@ -49,9 +62,16 @@
     }
 
     .dropzone.dragover {
-      background-color: #1f1f1f;
-      border-color: #ff6600;
-    }
+  background-color: #292929;
+  border-color: #ff6600;
+}
+
+.dropzone-content {
+  max-width: 800px; /* Limitiamo il testo */
+  width: 100%;
+  text-align: center;
+}
+
 
     input[type="file"] {
       display: none;
@@ -88,10 +108,11 @@
     }
 
     .browse-label {
-      cursor: pointer;
-      color: #ff6600;
-      text-decoration: underline;
-    }
+  cursor: pointer;
+  color: #ff6600;
+  text-decoration: underline;
+  font-size: 0.95rem; /* leggermente più piccolo anche il browse */
+}
 
     em {
       color: #aaa;
@@ -127,6 +148,10 @@
     border-radius: 8px;
     color: #eee;
   }
+
+  label, select {
+  font-size: 1rem;
+}
   .completed-vehicles h3 {
     color: #50fa7b;
     margin-top: 0;
@@ -193,16 +218,71 @@
   text-decoration: underline;
 }
 
+.vehicle-tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip-content {
+  visibility: hidden;
+  opacity: 0;
+  width: 180px;
+  background-color: #1e1e1e;
+  color: #eee;
+  text-align: center;
+  border-radius: 8px;
+  padding: 10px;
+  position: absolute;
+  z-index: 1;
+  top: 110%;
+  left: 50%;
+  transform: translateX(-50%);
+  box-shadow: 0 0 10px #ff6600;
+  transition: opacity 0.3s;
+}
+
+.tooltip-content img {
+  width: 100%;
+  border-radius: 6px;
+  margin-bottom: 8px;
+}
+
+.vehicle-tooltip:hover .tooltip-content {
+  visibility: visible;
+  opacity: 1;
+}
+
+.copy-path {
+  cursor: pointer;
+  color: #ffaa00;
+  text-decoration: underline;
+}
+.copy-path:hover {
+  color: #ff6600;
+}
+
+
+
+
 
   </style>
 </head>
 <body>
+  <div class="main-wrapper">
   <header class="top-bar">
     <h1>🔍 Missing Part Analyzer By Fox13_ 🇮🇹 - Drive Beyond Horizon</h1>
     <div class="header-links">
-      <a href="https://discord.gg/YWfqcGDcQh" target="_blank" rel="noopener">Official Discord</a>
-      <a href="https://drivebeyondhorizons.wiki.gg/" target="_blank" rel="noopener">Wiki</a>
-    </div>
+  <a href="https://discord.gg/YWfqcGDcQh" target="_blank" rel="noopener">
+    <img src="https://img.icons8.com/ios-filled/24/ff6600/discord-logo.png" alt="Discord" style="vertical-align: middle; margin-right: 6px;">
+    Official Discord
+  </a>
+  <a href="https://drivebeyondhorizons.wiki.gg/" target="_blank" rel="noopener">
+    <img src="https://img.icons8.com/ios-filled/24/ff6600/open-book--v1.png" alt="Wiki" style="vertical-align: middle; margin-right: 6px;">
+    Wiki
+  </a>
+</div>
+
+    
   </header>
 
   <div class="container">
@@ -229,43 +309,60 @@
     </div>
 
     <div class="completed-vehicles">
-      <h3>✅ Vehicles Fully Implemented on the Website</h3>
+      <h3>✅ Vehicles Fully Implemented</h3>
       <ul class="vehicle-list">
-        <li><label><input type="checkbox" checked  disabled> Dada</label></li>
-        <li><label><input type="checkbox" checked  disabled> Poyopa</label></li>
-        <li><label><input type="checkbox" disabled> Bonphiac</label></li>
-        <li><label><input type="checkbox" checked disabled> Musgoat</label></li>
-        <li><label><input type="checkbox" disabled> TriClops</label></li>
-        <li><label><input type="checkbox" disabled> GTR</label></li>
-        <li><label><input type="checkbox" disabled> Golf</label></li>
-        <li><label><input type="checkbox" disabled> UAZ</label></li>
-        <li><label><input type="checkbox" disabled> C15</label></li>
-        <li><label><input type="checkbox" disabled> IFA</label></li>
-        <li><label><input type="checkbox" disabled> Trailer</label></li>
+        <li><div class="vehicle-tooltip"><label><input type="checkbox" checked disabled> Dada</label><div class="tooltip-content"><img src="https://drivebeyondhorizons.wiki.gg/images/1/1e/Full_Dada.png" alt="Dada" /><p><strong>Total Parts:</strong> 61</p></div></div></li>
+        <li><div class="vehicle-tooltip"><label><input type="checkbox" checked disabled> Poyopa</label><div class="tooltip-content"><img src="https://drivebeyondhorizons.wiki.gg/images/e/ef/POYOPA.png" alt="Poyopa" /><p><strong>Total Parts:</strong> 57</p></div></div></li>
+        <li><div class="vehicle-tooltip"><label><input type="checkbox" disabled> Bonphiac</label><div class="tooltip-content"><img src="https://drivebeyondhorizons.wiki.gg/images/0/00/Bonphiac.JPG" alt="Bonphiac" /><p><strong>Total Parts:</strong> 59</p></div></div></li>
+        <li><div class="vehicle-tooltip"><label><input type="checkbox" checked disabled> Musgoat</label><div class="tooltip-content"><img src="https://drivebeyondhorizons.wiki.gg/images/a/af/Musgoat_full.png" alt="Musgoat" /><p><strong>Total Parts:</strong> 45</p></div></div></li>
+        <li><div class="vehicle-tooltip"><label><input type="checkbox" disabled> TriClops</label><div class="tooltip-content"><img src="https://drivebeyondhorizons.wiki.gg/images/1/11/Triclops.png" alt="TriClops" /><p><strong>Total Parts:</strong> 54</p></div></div></li>
+        <li><div class="vehicle-tooltip"><label><input type="checkbox" disabled> GTR</label><div class="tooltip-content"><img src="https://drivebeyondhorizons.wiki.gg/images/8/8f/GTR.png" alt="GTR" /><p><strong>Total Parts:</strong> 54</p></div></div></li>
+        <li><div class="vehicle-tooltip"><label><input type="checkbox" disabled> Golf</label><div class="tooltip-content"><img src="https://drivebeyondhorizons.wiki.gg/images/a/a8/Full_golf.png" alt="Golf" /><p><strong>Total Parts:</strong> 57</p></div></div></li>
+        <li><div class="vehicle-tooltip"><label><input type="checkbox" disabled> UAZ</label><div class="tooltip-content"><img src="https://drivebeyondhorizons.wiki.gg/images/b/b3/UAZ_.png" alt="UAZ" /><p><strong>Total Parts:</strong> 81</p></div></div></li>
+        <li><div class="vehicle-tooltip"><label><input type="checkbox" disabled> C18</label><div class="tooltip-content"><img src="https://drivebeyondhorizons.wiki.gg/images/7/70/C18.png" alt="C18" /><p><strong>Total Parts:</strong> 63</p></div></div></li>
+        <li><div class="vehicle-tooltip"><label><input type="checkbox" disabled> IFA</label><div class="tooltip-content"><img src="https://drivebeyondhorizons.wiki.gg/images/a/a4/IFA.png" alt="IFA" /><p><strong>Total Parts:</strong> 50</p></div></div></li>
+        <li><div class="vehicle-tooltip"><label><input type="checkbox" disabled> Trailer</label><div class="tooltip-content"><img src="https://drivebeyondhorizons.wiki.gg/images/6/67/Full_Trailer.png" alt="Trailer" /><p><strong>Total Parts:</strong> 8</p></div></div></li>
       </ul>
     </div>
   </div>
 
+  <!-- DROPZONE -->
+  <div class="dropzone" id="dropzone">
+    <div class="dropzone-content">
+      📂 Drag and drop your <code>.log</code> file here or <label for="logInput" class="browse-label">click to browse</label>.
+      <br>
+      <small>
+        📁 Recommended path: 
+        <span class="copy-path" onclick="copyPath()">
+          <code>C:\Users\"user"\\AppData\\Local\\DriveBeyondHorizons\\Saved\\Logs</code>
+        </span>
+      </small>
+      <div id="copyMessage" style="margin-top: 0.5rem; font-size: 0.9rem; color: #50fa7b; display: none;">
+        ✅ Path copied to clipboard!
+      </div>
+    </div>
+    <input type="file" id="logInput" accept=".log,.txt">
+  </div>
+  
+  
   
   
 
-  <div class="dropzone" id="dropzone">
-    Drag and drop your `.log` file here or <label for="logInput" class="browse-label">click to browse</label>.<br>
-    <small>📁 Recommended path: <code>C:\Users\"user"\AppData\Local\DriveBeyondHorizons\Saved\Logs</code></small>
-    <input type="file" id="logInput" accept=".log,.txt">
-  </div>
-  <div style="display: flex; align-items: center; gap: 2rem; margin-bottom: 1rem;">
-    <label for="vehicleSelect">🚗 Filter by vehicle:</label>
-    <select id="vehicleSelect"></select>
-    <label>
-      <input type="checkbox" id="reverseToggle" style="margin-right: 0.5rem;">
-       Show newest entries first
-    </label>
-  </div>
+<!-- Opzioni sotto la barra, centrate -->
+<div style="display: flex; justify-content: center; flex-wrap: wrap; align-items: center; gap: 1rem; margin-bottom: 2rem;">
+  <label for="vehicleSelect" style="display: flex; align-items: center; gap: 0.5rem;">
+    🚗 Filter by vehicle:
+    <select id="vehicleSelect" style="font-size: 1.1rem; padding: 0.5rem 1rem; border-radius: 6px; background-color: #1a1a1a; color: #eee; border: 1px solid #444;"></select>
+  </label>
   
-  
-  
-  <div id="output"></div>
+  <label style="display: flex; align-items: center; gap: 0.5rem;">
+    <input type="checkbox" id="reverseToggle">
+    Show newest entries first 🔁
+  </label>
+</div>
+
+<!-- Output dei risultati -->
+<div id="output"></div>
 
   <script>
     const dropzone = document.getElementById("dropzone");
@@ -287,6 +384,19 @@
 
   // Aggiungi qui tutti i nomi ufficiali che usi nella wiki
 };
+
+function copyPath() {
+  const path = 'C:\\Users\\"user"\\AppData\\Local\\DriveBeyondHorizons\\Saved\\Logs';
+  navigator.clipboard.writeText(path).then(() => {
+    const message = document.getElementById('copyMessage');
+    message.style.display = 'block';
+    setTimeout(() => {
+      message.style.display = 'none';
+    }, 2000); // Nascondi dopo 2 secondi
+  }).catch(err => {
+    console.error('Could not copy text: ', err);
+  });
+}
 
 const wikiPartImages = {
   // POYOPA
@@ -395,6 +505,9 @@ const wikiPartImages = {
   "LadaCarNew_C.CarWheelFR":"https://drivebeyondhorizons.wiki.gg/images/3/33/DadaWheelRim.png",//cerchio ruota frontale destra
   "LadaCarNew_C.CarWheelBR":"https://drivebeyondhorizons.wiki.gg/images/3/33/DadaWheelRim.png",//cerchio ruota posteriore destra
   "LadaCarNew_C.CarStarterV2":"https://drivebeyondhorizons.wiki.gg/images/4/49/Ignition.png",// chiave
+
+  "LadaCarNew_C.CarEquipableV24":"https://drivebeyondhorizons.wiki.gg/images/9/9e/DadaTrim.png",//minigonna sinistra
+  "LadaCarNew_C.CarEquipableV25":"https://drivebeyondhorizons.wiki.gg/images/9/9e/DadaTrim.png",//minigonna destra
 
  //musgoat
   "MusgoatDoor_L_C.CarEquipableV3":"https://drivebeyondhorizons.wiki.gg/images/d/d6/MusgoatMirrorLeft.png",//specchietto sinistro guidatore
@@ -668,6 +781,8 @@ function extractVehicleName(partCode) {
   "LadaCarNew_C.CarWheelFR": "Right Front Wheel Rim",
   "LadaCarNew_C.CarWheelBR": "Right Rear Wheel Rim",
   "LadaCarNew_C.CarStarterV2":"Ignition Key",
+  "LadaCarNew_C.CarEquipableV24":"Left Trim",//minigonna sinistra
+  "LadaCarNew_C.CarEquipableV25":"RIght Trim",//minigonna destra
 
 
   //MUSGOAT
@@ -953,5 +1068,6 @@ entries.forEach(html => {
   
 
   <div class="footer"></div>
+</div>
 </body>
 </html>
