@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dada - Vehicle Parts</title>
+  <style>
+    /* Body and page background to match index */
+    body {
+      background-color: #121212;
+      color: #eee;
+      margin: 0;
+      padding: 0 1rem;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    /* Sezione categoria: box scuro identico all’index */
+    .category-section {
+      background-color: #1e1e1e;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 2rem;
+    }
+    /* Titolo categoria */
+    .category-title {
+      margin: 0 0 0.75rem;
+      font-size: 1.2rem;
+      color: #ff6600;
+      border-bottom: 1px solid #333;
+      padding-bottom: 0.25rem;
+    }
+    /* Grid delle cards */
+    .parts-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 1rem;
+      margin: 0;
+    }
+    .part-card {
+      background-color: #1e1e1e;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 1rem;
+      text-align: center;
+      transition: transform 0.2s, box-shadow 0.2s;
+      text-decoration: none;
+      color: inherit;
+    }
+    .part-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+    }
+    .part-card img {
+      max-height: 120px;          /* da auto-margin a un’altezza fissa più generosa */
+  width: auto;
+  margin-bottom: 0.75rem;     /* aumenta lo spazio sotto l’immagine */
+    }
+    .part-name {
+      font-weight: bold;
+      margin-bottom: 0.25rem;
+      color: #eee;
+    }
+    .part-codes {
+  display: block;
+}
+.part-codes code {
+  display: block;
+  margin-bottom: 0.25rem;
+}
+    .back-link {
+  display: block;
+  margin: 2rem auto 1rem;
+  padding: 0.75rem 1.5rem;
+  max-width: 200px;
+  background-color: #1e1e1e;
+  border: 1px solid #333;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 1.1rem;
+  color: #ff6600;
+  text-decoration: none;
+  transition: background-color 0.2s;
+}
+.back-link:hover {
+  background-color: #292929;
+}
+.vehicle-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.vehicle-header h1 {
+  font-size: 1.8rem;
+  color: #ff6600;
+  margin: 0;
+}
+
+.vehicle-header img {
+  max-height: 120px; /* più grande */
+  width: auto;
+  border-radius: 4px;
+  order: 2;          /* assicura che l’immagine stia a destra */
+  margin-left: 0.5rem;
+}
+.search-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+}
+
+#searchInput {
+  width: 60%;
+  max-width: 300px;
+  padding: 0.5rem;
+  border: 1px solid #333;
+  border-radius: 6px;
+  background-color: #1e1e1e;
+  color: #eee;
+  font-size: 1rem;
+}
+#searchInput::placeholder {
+  color: #777;
+}
+.part-codes code {
+  position: relative;
+  color: transparent;            /* rendi invisibile il testo completo */
+  display: inline-block;
+}
+.part-codes code::after {
+  content: attr(data-suffix);    /* mostra solo il suffisso */
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: #aaa;                   /* stesso colore dei code */
+}
+
+
+  </style>
+</head>
+<body>
+  <header class="vehicle-header">
+    <h1>Dada</h1>
+    <img src="https://drivebeyondhorizons.wiki.gg/images/1/1e/Full_Dada.png" alt="Dada">
+  </header>
+  <div class="search-container">
+    <input type="text" id="searchInput" placeholder="Search by part code…">
+  </div>
+  <!-- Engine Bay -->
+<div class="category-section">
+  <h3 class="category-title">Engine Bay</h3>
+  <div class="parts-list">
+    <a class="part-card" href="https://drivebeyondhorizons.wiki.gg/wiki/Dada#LadaCarNew_C.CarMotorV2" target="_blank">
+      <img src="https://drivebeyondhorizons.wiki.gg/images/e/e0/I4engine.png" alt="Engine">
+      <div class="part-name">Engine</div>
+      <div class="part-codes"><code>LadaCarNew_C.CarMotorV2</code><code>LADAMOTOR</code></div>
+    </a>
+    <a class="part-card" href="https://drivebeyondhorizons.wiki.gg/wiki/Dada#LadaCarNew_C.CarBatteryV2" target="_blank">
+      <img src="https://drivebeyondhorizons.wiki.gg/images/0/01/DadaBattery50A.png" alt="Battery">
+      <div class="part-name">Battery</div>
+      <div class="part-codes"><code>LadaCarNew_C.CarBatteryV2</code><code>BATTERY50</code></div>
+    </a>
+    <a class="part-card" href="https://drivebeyondhorizons.wiki.gg/wiki/Dada#LadaCarNew_C.CarRadiatorV2" target="_blank">
+      <img src="https://drivebeyondhorizons.wiki.gg/images/3/3c/DadaRadiator.png" alt="Radiator">
+      <div class="part-name">Radiator</div>
+      <div class="part-codes"><code>LadaCarNew_C.CarRadiatorV2</code><code>RADIATOR6L</code></div>
+    </a>
+  </div>
+</div>
+
+<!-- Lighting -->
+<div class="category-section">
+  <h3 class="category-title">Lighting</h3>
+  <div class="parts-list">
+    <a class="part-card" href="https://drivebeyondhorizons.wiki.gg/wiki/Dada#LadaCarNew_C.CarLightsV3_HL_TS" target="_blank">
+      <img src="https://drivebeyondhorizons.wiki.gg/images/8/8b/DadaHeadlight.png" alt="Headlight">
+      <div class="part-name">Headlight ×2</div>
+      <div class="part-codes"><code>LadaCarNew_C.CarLightsV3_HL_TS</code><code>LadaCarNew_C.CarLightsV3_HL_TS1</code><code>BP_LADAHEADLIGHT</code></div>
+    </a>
+    <a class="part-card" href="https://drivebeyondhorizons.wiki.gg/wiki/Dada#LadaCarNew_C.CarLightsV3_TS1" target="_blank">
+      <img src="https://drivebeyondhorizons.wiki.gg/images/4/40/DadaTurnSignalR.png" alt="Right Turn Signal">
+      <div class="part-name">Front Right Turn Signal</div>
+      <div class="part-codes"><code>LadaCarNew_C.CarLightsV3_TS1</code><code>BP_LADAINIDCATORLIGHTSRIGHT</code></div>
+    </a>
+    <a class="part-card" href="https://drivebeyondhorizons.wiki.gg/wiki/Dada#LadaCarNew_C.CarLightsV3_TS" target="_blank">
+      <img src="https://drivebeyondhorizons.wiki.gg/images/b/bb/DadaTurnSignalL.png" alt="Left Turn Signal">
+      <div class="part-name">Front Left Turn Signal</div>
+      <div class="part-codes"><code>LadaCarNew_C.CarLightsV3_TS</code><code>BP_LADAINIDCATORLIGHTSLEFT</code></div>
+    </a>
+    <a class="part-card" href="https://drivebeyondhorizons.wiki.gg/wiki/Dada#LadaCarNew_C.CarLightsV3_RL_TS_Rev" target="_blank">
+      <img src="https://drivebeyondhorizons.wiki.gg/images/5/59/DadaTailLightL.png" alt="Left Tail Light">
+      <div class="part-name">Left Tail Light</div>
+      <div class="part-codes"><code>LadaCarNew_C.CarLightsV3_RL_TS_Rev</code><code>BP_LADAREARLIGHTSLEFT</code></div>
+    </a>
+    <a class="part-card" href="https://drivebeyondhorizons.wiki.gg/wiki/Dada#LadaCarNew_C.CarLightsV3_RL_TS_Rev1" target="_blank">
+      <img src="https://drivebeyondhorizons.wiki.gg/images/6/6c/DadaTailLightR.png" alt="Right Tail Light">
+      <div class="part-name">Right Tail Light</div>
+      <div class="part-codes"><code>LadaCarNew_C.CarLightsV3_RL_TS_Rev1</code><code>BP_LADAREARLIGHTSRIGHT</code></div>
+    </a>
+    <a class="part-card" href="https://drivebeyondhorizons.wiki.gg/wiki/Dada#LadaCarNew_C.CarLightsV3_Interior" target="_blank">
+      <img src="https://drivebeyondhorizons.wiki.gg/images/e/e9/DadaInteriorLight.png" alt="Interior Light">
+      <div class="part-name">Interior &amp; Trunk Light ×3</div>
+      <div class="part-codes"><code>LadaCarNew_C.CarLightsV3_Interior</code><code>LadaCarNew_C.CarLightsV3_Interior1</code><code>LadaCarNew_C.CarLightsV3_Interior2</code><code>BP_INTERIORLIGHT</code></div>
+    </a>
+  </div>
+</div>
+
+ <!-- Exterior -->
+<div class="category-section">
+  <h3 class="category-title">Exterior</h3>
+  <div class="parts-list">
+    <a class="part-card" href="https://drivebeyondhorizons.wiki.gg/wiki/Dada#LadaCarNew_C.CarEquipableV21" target="_blank">
+      <img src="https://drivebeyondhorizons.wiki.gg/images/0/09/DadaGrill.png" alt="Front Grille">
+      <div class="part-name">Front Grille</div>
+      <div class="part-codes"><code>LadaCarNew_C.CarEquipableV21</code><code></code>BP_LADAGRID</div>
+    </a>
+    <a class="part-card" href="https://drivebeyondhorizons.wiki.gg/wiki/Dada#LadaCarNew_C.CarMovableHood" target="_blank">
+      <img src="https://drivebeyondhorizons.wiki.gg/images/c/c2/DadaHood.png" alt="Hood">
+      <div class="part-name">Hood</div>
+      <div class="part-codes"><code>LadaCarNew_C.CarMovableHood</code><code>LADAHOOD</code></div>
+    </a>
+    <a class="part-card" href="https://drivebeyondhorizons.wiki.gg/wiki/Dada#LadaCarNew_C.CarDoorFL" target="_blank">
+      <img src="https://drivebeyondhorizons.wiki.gg/images/3/35/DadaFrontDoorL.png" alt="Left Front Door">
+      <div class="part-name">Left Front Door</div>
+      <div class="part-codes"><code>LadaCarNew_C.CarDoorFL</code><code>LADADOOR_FL</code></div>
+    </a>
+    <a class="part-card" href="https://drivebeyondhorizons.wiki.gg/wiki/Dada#LadaCarNew_C.CarDoorRL" target="_blank">
+      <img src="https://drivebeyondhorizons.wiki.gg/images/f/f0/DadaRearDoorL.png" alt="Left Rear Door">
+      <div class="part-name">Left Rear Door</div>
+      <div class="part-codes"><code>LadaCarNew_C.CarDoorRL</code><code>LADADOOR_RL</code></div>
+    </a>
+    <a class="part-card" href="https://drivebeyondhorizons.wiki.gg/wiki/Dada#LadaCarNew_C.CarDoorFR" target="_blank">
+      <img src="https://drivebeyondhorizons.wiki.gg/images/d/d4/DadaFrontDoorR.png" alt="Right Front Door">
+      <div class="part-name">Right Front Door</div>
+      <div class="part-codes"><code>LadaCarNew_C.CarDoorFR</code><code>LADADOOR_FR</code></div>
+    </a>
+    <a class="part-card" href="https://drivebeyondhorizons.wiki.gg/wiki/Dada#LadaCarNew_C.CarDoorRR" target="_blank">
+      <img src="https://drivebeyondhorizons.wiki.gg/images/e/e4/DadaRearDoorR.png" alt="Right Rear Door">
+      <div class="part-name">Right Rear Door</div>
+      <div class="part-codes"><code>LadaCarNew_C.CarDoorRR</code><code>LADADOOR_RR</code></div>
+    </a>
+    <a class="part-card" href="https://drivebeyondhorizons.wiki.gg/wiki/Dada#LadaCarNew_C.CarMovableGasHatch" target="_blank">
+      <img src="https://drivebeyondhorizons.wiki.gg/images/2/24/DadaFuelTankLid.png" alt="Fuel Cap">
+      <div class="part-name">Fuel Cap</div>
+      <div class="part-codes"><code>LadaCarNew_C.CarMovableGasHatch</code><code>LADAGASHATCH</code></div>
+    </a>
+    <a class="part-card" href="https://drivebeyondhorizons.wiki.gg/wiki/Dada#LadaCarNew_C.CarMovableBoot" target="_blank">
+      <img src="https://drivebeyondhorizons.wiki.gg/images/c/cb/DadaTrunkLid.png" alt="Trunk Lid">
+      <div class="part-name">Trunk Lid</div>
+      <div class="part-codes"><code>LadaCarNew_C.CarMovableBoot</code><code><code>LADABOOT</code></code></div>
+    </a>
+    <a class="part-card" href="https://drivebeyondhorizons.wiki.gg/wiki/Dada#LadaCarNew_C.CarEquipableV22" target="_blank">
+      <img src="https://drivebeyondhorizons.wiki.gg/images/1/12/DadaFrontBumper.png" alt="Front Bumper">
+      <div class="part-name">Front Bumper</div>
+      <div class="part-codes"><code>LadaCarNew_C.CarEquipableV22</code><code>BP_LADAFRONTBUMPER</code></div>
+    </a>
+    <a class="part-card" href="https://drivebeyondhorizons.wiki.gg/wiki/Dada#LadaCarNew_C.CarEquipableV23" target="_blank">
+      <img src="https://drivebeyondhorizons.wiki.gg/images/c/cf/DadaRearBumper.png" alt="Rear Bumper">
+      <div class="part-name">Rear Bumper</div>
+      <div class="part-codes"><code>LadaCarNew_C.CarEquipableV23</code><code>BP_LADAREARBUMPER</code></div>
+    </a>
+    <a class="part-card" href="https://drivebeyondhorizons.wiki.gg/wiki/Dada#LadaDoor_FL_C.CarEquipableV3" target="_blank">
+      <img src="https://drivebeyondhorizons.wiki.gg/images/c/c6/DadaMirrorLeft.png" alt="Left Mirror">
+      <div class="part-name">Left Mirror</div>
+      <div class="part-codes"><code>LadaDoor_FL_C.CarEquipableV3</code><code>BP_LADA_MIRROR_LEFT</code></div>
+    </a>
+    <a class="part-card" href="https://drivebeyondhorizons.wiki.gg/wiki/Dada#LadaDoor_FR_C.CarEquipableV3" target="_blank">
+      <img src="https://drivebeyondhorizons.wiki.gg/images/7/7d/DadaMirrorRight.png" alt="Right Mirror">
+      <div class="part-name">Right Mirror</div>
+      <div class="part-codes"><code>LadaDoor_FR_C.CarEquipableV3</code><code>BP_LADA_MIRROR_RIGHT</code></div>
+    </a>
+    <a class="part-card" href="https://drivebeyondhorizons.wiki.gg/wiki/Dada#LadaCarNew_C.CarGlassFront" target="_blank">
+      <img src="https://drivebeyondhorizons.wiki.gg/images/2/25/DadaWindshield.png" alt="Windshield">
+      <div class="part-name">Windshield</div>
+      <div class="part-codes"><code>LadaCarNew_C.CarGlassFront</code><code>LADAGLASSFRONT</code></div>
+    </a>
+    <a class="part-card" href="https://drivebeyondhorizons.wiki.gg/wiki/Dada#LadaCarNew_C.CarGlassBack" target="_blank">
+      <img src="https://drivebeyondhorizons.wiki.gg/images/c/c9/DadaRearWindow.png" alt="Rear Window">
+      <div class="part-name">Rear Window</div>
+      <div class="part-codes"><code>LadaCarNew_C.CarGlassBack</code><code>LADAGLASSBACK</code></div>
+    </a>
+    <a class="part-card" href="https://drivebeyondhorizons.wiki.gg/wiki/Dada#LadaCarNew_C.CarEquipableV24" target="_blank">
+      <img src="https://drivebeyondhorizons.wiki.gg/images/9/9e/DadaTrim.png" alt="Trim">
+      <div class="part-name">Trim ×2</div>
+      <div class="part-codes"><code>LadaCarNew_C.CarEquipableV24</code><code>LadaCarNew_C.CarEquipableV25</code><code>BP_LADA_BAGUETTE</code></div>
+    </a>
+    <a class="part-card" href="https://drivebeyondhorizons.wiki.gg/wiki/Dada#LadaCarNew_C.CarEquipableV26" target="_blank">
+      <img src="https://drivebeyondhorizons.wiki.gg/images/5/58/GoatLicensePlate.png" alt="License Plate">
+      <div class="part-name">License Plate ×2</div>
+      <div class="part-codes"><code>LadaCarNew_C.CarEquipableV26</code><code>LadaCarNew_C.CarEquipableV27</code><code>BP_PLATE_00</code></div>
+    </a>
+  </div>
+</div>
+
+<!-- Interior -->
+<div class="category-section">
+  <h3 class="category-title">Interior</h3>
+  <div class="parts-list">
+    <a class="part-card" href="https://drivebeyondhorizons.wiki.gg/wiki/Dada#LadaCarNew_C.CarSeatPassenger2" target="_blank">
+      <img src="https://drivebeyondhorizons.wiki.gg/images/9/9f/DadaSeat.png" alt="Seat">
+      <div class="part-name">Seat ×4</div>
+      <div class="part-codes"><code>LadaCarNew_C.CarSeatPassenger</code><code>LadaCarNew_C.CarSeatPassenger1</code><code>LadaCarNew_C.CarSeatPassenger2</code><code>LadaCarNew_C.CarSeatDriver</code><code>LADASEAT</code></div>
+    </a>
+    <a class="part-card" href="https://drivebeyondhorizons.wiki.gg/wiki/Dada#LadaCarNew_C.CarSeatbeltAttachV2" target="_blank">
+      <img src="https://drivebeyondhorizons.wiki.gg/images/a/aa/DadaSeatbeltLower.png" alt="Seatbelt Latch">
+      <div class="part-name">Seatbelt Latch ×2</div>
+      <div class="part-codes"><code>LadaCarNew_C.CarSeatbeltAttachV2</code><code>LadaCarNew_C.CarSeatbeltAttachV21</code><code>CARITEMSEATBELTATTACH</code></div>
+    </a>
+    <a class="part-card" href="https://drivebeyondhorizons.wiki.gg/wiki/Dada#LadaCarNew_C.CarSeatbeltV2" target="_blank">
+      <img src="https://drivebeyondhorizons.wiki.gg/images/4/42/DadaSeatbeltUpper.png" alt="Seatbelt Anchor Point">
+      <div class="part-name">Seatbelt Anchor Point ×2</div>
+      <div class="part-codes"><code>LadaCarNew_C.CarSeatbeltV2</code><code>LadaCarNew_C.CarSeatbeltV21</code><code>CARITEMSEATBELT</code></div>
+    </a>
+    <a class="part-card" href="https://drivebeyondhorizons.wiki.gg/wiki/Dada#LadaCarNew_C.CarSteeringWheelV2" target="_blank">
+      <img src="https://drivebeyondhorizons.wiki.gg/images/b/b8/DadaSteeringWheel.png" alt="Steering Wheel">
+      <div class="part-name">Steering Wheel</div>
+      <div class="part-codes"><code>LadaCarNew_C.CarSteeringWheelV2</code><code>LADASTEERINGWHEEL</code></div>
+    </a>
+    <a class="part-card" href="https://drivebeyondhorizons.wiki.gg/wiki/Dada#LadaCarNew_C.CarDashboardV2" target="_blank">
+      <img src="https://drivebeyondhorizons.wiki.gg/images/e/e6/DadaDashboard.png" alt="Dashboard">
+      <div class="part-name">Dashboard</div>
+      <div class="part-codes"><code>LadaCarNew_C.CarDashboardV2</code><code>BP_LADADASHBOARD</code></div>
+    </a>
+    <a class="part-card" href="https://drivebeyondhorizons.wiki.gg/wiki/Dada#LadaCarNew_C.CarRadioV2" target="_blank">
+      <img src="https://drivebeyondhorizons.wiki.gg/images/e/e9/CarRadio.png" alt="Radio">
+      <div class="part-name">Radio</div>
+      <div class="part-codes"><code>LadaCarNew_C.CarRadioV2</code><code>CARITEMRADIOACTOR</code></div>
+    </a>
+    <a class="part-card" href="https://drivebeyondhorizons.wiki.gg/wiki/Dada#LadaCarNew_C.CarGearShifterV2" target="_blank">
+      <img src="https://drivebeyondhorizons.wiki.gg/images/d/db/DadaShifter.png" alt="Gear Shifter">
+      <div class="part-name">Gear Shifter</div>
+      <div class="part-codes"><code>LadaCarNew_C.CarGearShifterV2</code><code>LADAGEARLEVER</code></div>
+    </a>
+    <a class="part-card" href="https://drivebeyondhorizons.wiki.gg/wiki/Dada#LadaCarNew_C.CarHandbrakeV2" target="_blank">
+      <img src="https://drivebeyondhorizons.wiki.gg/images/0/01/Handbrake.png" alt="Handbrake">
+      <div class="part-name">Handbrake</div>
+      <div class="part-codes"><code>LadaCarNew_C.CarHandbrakeV2</code><code>BP_DADA_HANDBRAKE</code></div>
+    </a>
+    <a class="part-card" href="https://drivebeyondhorizons.wiki.gg/wiki/Dada#LadaCarNew_C.CarPedalSpeed" target="_blank">
+      <img src="https://drivebeyondhorizons.wiki.gg/images/e/e2/DadaPedal.png" alt="Pedals">
+      <div class="part-name">Pedals ×3</div>
+      <div class="part-codes">
+        <code>LadaCarNew_C.CarPedalSpeed</code>
+        <code>LadaCarNew_C.CarPedalBrake</code>
+        <code>LadaCarNew_C.CarPedalClutch</code><code>LADAPEDAL</code>
+      </div>
+    </a>
+    <a class="part-card" href="https://drivebeyondhorizons.wiki.gg/wiki/Dada#LadaCarNew_C.CarStarterV2" target="_blank">
+      <img src="https://drivebeyondhorizons.wiki.gg/images/4/49/Ignition.png" alt="Ignition Key">
+      <div class="part-name">Ignition Key</div>
+      <div class="part-codes"><code>LadaCarNew_C.CarStarterV2</code><code>CARITEMSTARTERACTOR</code></div>
+    </a>
+  </div>
+</div>
+
+<!-- Wheels & Trims -->
+<div class="category-section">
+  <h3 class="category-title">Wheels &amp; Trims</h3>
+  <div class="parts-list">
+    <a class="part-card" href="https://drivebeyondhorizons.wiki.gg/wiki/Dada#LadaCarNew_C.CarWheelFL" target="_blank">
+      <img src="https://drivebeyondhorizons.wiki.gg/images/3/33/DadaWheelRim.png" alt="Wheel Rim">
+      <div class="part-name">Wheel Rim ×4</div>
+      <div class="part-codes">
+        <code>LadaCarNew_C.CarWheelFL</code>
+        <code>LadaCarNew_C.CarWheelBL</code>
+        <code>LadaCarNew_C.CarWheelFR</code>
+        <code>LadaCarNew_C.CarWheelBR</code>
+        <code></code>
+      </div>
+    </a>
+    <a class="part-card" href="https://drivebeyondhorizons.wiki.gg/wiki/Dada#Rim15_C.CarWheelyV2" target="_blank">
+      <img src="https://drivebeyondhorizons.wiki.gg/images/f/f3/DadaTire.png" alt="Tire">
+      <div class="part-name">Tire ×4</div>
+      <div class="part-codes"><code>Rim15_C.CarWheelyV2</code><code>WHEEL15</code></div>
+    </a>
+    <a class="part-card" href="https://drivebeyondhorizons.wiki.gg/wiki/Dada#Rim15_C.CarEquipableRimDeco" target="_blank">
+      <img src="https://drivebeyondhorizons.wiki.gg/images/a/aa/Hubcap.png" alt="Hubcap">
+      <div class="part-name">Hubcap ×4</div>
+      <div class="part-codes"><code>Rim15_C.CarEquipableRimDeco</code><code>RIMDECO15</code></div>
+    </a>
+  </div>
+</div>
+
+
+  <a href="index.html" class="back-link">⬅️ Back to vehicle list</a>
+
+
+  <script>
+    document.getElementById('searchInput').addEventListener('input', function() {
+      const q = this.value.toLowerCase().trim();
+      document.querySelectorAll('.part-card').forEach(card => {
+        const codeText = card.querySelector('.part-codes code').textContent.toLowerCase();
+        const nameText = card.querySelector('.part-name').textContent.toLowerCase();
+        card.style.display = (codeText.includes(q) || nameText.includes(q)) ? '' : 'none';
+      });
+    });
+
+    document.querySelectorAll('.part-codes').forEach(div => {
+    const codes = Array.from(div.querySelectorAll('code'))
+                       .map(c => c.textContent.trim())
+                       .join(', ');
+    div.setAttribute('title', codes);
+  });
+
+
+  document.querySelectorAll('.part-codes code').forEach(el => {
+  const full = el.textContent.trim();
+  // rimuovi LadaCarNew_C., Rim15_C., LadaDoor_<qualcosa>., bp_lada. e BP_LADA_ o BP_LADA
+  const suffix = full.replace(
+    /^(?:LadaCarNew_C\.|Rim15_C\.|LadaDoor_[^\.]*\.|bp_lada(?:\.|_)?|BP_LADA(?:\.|_)?)/i,
+    ''
+  );
+  el.setAttribute('data-suffix', suffix);
+});
+
+
+  </script>
+  
+  
+</body>
+</html>
+
+

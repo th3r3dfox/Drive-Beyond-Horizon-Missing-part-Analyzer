@@ -163,7 +163,7 @@ body {
   margin: 0;
 }
 .vehicle-list li {
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.rem;
 }
 .vehicle-list label {
   display: inline-flex;
@@ -220,36 +220,74 @@ body {
 
 .vehicle-tooltip {
   position: relative;
-  display: inline-block;
+  width: 100%;
+  display: block;
+}
+
+.tooltip-content {
+  display: flex;
+  align-items: center;
+  background-color: #1e1e1e;
+  color: #eee;
+  text-align: left;
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0 0 10px #ff6600;
+  transition: opacity 0.3s;
+  gap: 1rem;
+  position: absolute;   /* già lo era, ma lo ribadiamo */
+  top: 100%;            /* subito sotto il wrapper */
+  left: 0;              /* allineato al suo bordo sinistro */
+  width: 100%;          /* occupa tutta la larghezza del wrapper */
+  max-width: none;      /* rimuove il limite di 400px */
+  box-sizing: border-box; /* include padding/border nel calcolo larghezza */
+}
+
+.tooltip-content img {
+  width: 100px;
+  height: auto;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.tooltip-content p {
+  margin: 0.2rem 0;
+  font-size: 0.9rem;
 }
 
 .tooltip-content {
   visibility: hidden;
   opacity: 0;
-  width: 180px;
-  background-color: #1e1e1e;
-  color: #eee;
-  text-align: center;
-  border-radius: 8px;
-  padding: 10px;
   position: absolute;
-  z-index: 1;
-  top: 110%;
-  left: 50%;
-  transform: translateX(-50%);
-  box-shadow: 0 0 10px #ff6600;
-  transition: opacity 0.3s;
+  z-index: 100;
 }
 
-.tooltip-content img {
+.tooltip-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   width: 100%;
-  border-radius: 6px;
-  margin-bottom: 8px;
 }
+
+.vehicle-name {
+  font-size: 1rem;
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+.tooltip-body {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+
 
 .vehicle-tooltip:hover .tooltip-content {
   visibility: visible;
   opacity: 1;
+  position: relative; /* già impostato, ma lo ribadiamo */
+  z-index: 1000;      /* valore alto per superare le checkbox */
 }
 
 .copy-path {
@@ -259,6 +297,58 @@ body {
 }
 .copy-path:hover {
   color: #ff6600;
+}
+
+.vehicle-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+  padding: 0.5rem;
+  border-radius: 6px;
+  transition: background-color 0.2s, transform 0.2s;
+}
+
+.vehicle-link:hover {
+  background-color: #1a1a1a;
+  transform: scale(1.02);
+  cursor: pointer;
+}
+
+.completed-vehicles,
+.vehicle-list,
+.vehicle-list li {
+  overflow: visible;
+}
+
+.vehicle-tooltip {
+  display: inline-block;
+  position: relative;
+  z-index: 1000;
+}
+
+.tooltip-content {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  min-width: 100%;
+  max-width: none;
+  box-sizing: border-box;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.3s;
+  z-index: 1001;
+}
+
+.vehicle-tooltip:hover .tooltip-content {
+  visibility: visible;
+  opacity: 1;
+}
+
+.vehicle-list {
+  columns: none;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.1rem 1rem;
 }
 
 
@@ -316,18 +406,250 @@ body {
         </small>
       </h3>
       <ul class="vehicle-list" style="margin-top: 1rem;">
-        <li><div class="vehicle-tooltip"><label><input type="checkbox" checked disabled> Dada</label><div class="tooltip-content"><img src="https://drivebeyondhorizons.wiki.gg/images/1/1e/Full_Dada.png" alt="Dada" /><p><strong>Total Parts:</strong> 61</p></div></div></li>
-        <li><div class="vehicle-tooltip"><label><input type="checkbox" checked disabled> Poyopa</label><div class="tooltip-content"><img src="https://drivebeyondhorizons.wiki.gg/images/e/ef/POYOPA.png" alt="Poyopa" /><p><strong>Total Parts:</strong> 57</p></div></div></li>
-        <li><div class="vehicle-tooltip"><label><input type="checkbox" disabled> Bonphiac</label><div class="tooltip-content"><img src="https://drivebeyondhorizons.wiki.gg/images/0/00/Bonphiac.JPG" alt="Bonphiac" /><p><strong>Total Parts:</strong> 59</p></div></div></li>
-        <li><div class="vehicle-tooltip"><label><input type="checkbox" checked disabled> Musgoat</label><div class="tooltip-content"><img src="https://drivebeyondhorizons.wiki.gg/images/a/af/Musgoat_full.png" alt="Musgoat" /><p><strong>Total Parts:</strong> 45</p></div></div></li>
-        <li><div class="vehicle-tooltip"><label><input type="checkbox" disabled> TriClops</label><div class="tooltip-content"><img src="https://drivebeyondhorizons.wiki.gg/images/1/11/Triclops.png" alt="TriClops" /><p><strong>Total Parts:</strong> 54</p></div></div></li>
-        <li><div class="vehicle-tooltip"><label><input type="checkbox" checked disabled> GTR</label><div class="tooltip-content"><img src="https://drivebeyondhorizons.wiki.gg/images/8/8f/GTR.png" alt="GTR" /><p><strong>Total Parts:</strong> 54</p></div></div></li>
-        <li><div class="vehicle-tooltip"><label><input type="checkbox" checked disabled> Golf</label><div class="tooltip-content"><img src="https://drivebeyondhorizons.wiki.gg/images/a/a8/Full_golf.png" alt="Golf" /><p><strong>Total Parts:</strong> 57</p></div></div></li>
-        <li><div class="vehicle-tooltip"><label><input type="checkbox" disabled> UAZ</label><div class="tooltip-content"><img src="https://drivebeyondhorizons.wiki.gg/images/b/b3/UAZ_.png" alt="UAZ" /><p><strong>Total Parts:</strong> 81</p></div></div></li>
-        <li><div class="vehicle-tooltip"><label><input type="checkbox" disabled> C18</label><div class="tooltip-content"><img src="https://drivebeyondhorizons.wiki.gg/images/7/70/C18.png" alt="C18" /><p><strong>Total Parts:</strong> 63</p></div></div></li>
-        <li><div class="vehicle-tooltip"><label><input type="checkbox" disabled> IFA</label><div class="tooltip-content"><img src="https://drivebeyondhorizons.wiki.gg/images/a/a4/IFA.png" alt="IFA" /><p><strong>Total Parts:</strong> 50</p></div></div></li>
-        <li><div class="vehicle-tooltip"><label><input type="checkbox" disabled> Trailer</label><div class="tooltip-content"><img src="https://drivebeyondhorizons.wiki.gg/images/6/67/Full_Trailer.png" alt="Trailer" /><p><strong>Total Parts:</strong> 8</p></div></div></li>
-      </ul>
+        <li>
+          <a href="dada.html" class="vehicle-link">
+            <div class="vehicle-tooltip">
+              <label><input type="checkbox" checked disabled> Dada</label>
+              <div class="tooltip-content">
+                <div class="tooltip-text">
+                  <div class="vehicle-name"><strong>Dada</strong></div>
+                  <div class="tooltip-body">
+                    <img src="https://drivebeyondhorizons.wiki.gg/images/1/1e/Full_Dada.png" alt="Dada" />
+                    <div>
+                    <p><strong>Total Parts:</strong> 51</p>
+                    <p><strong>Max Speed:</strong> 105 Km/h</p>
+                    <p><strong>Fuel consumption L/km:</strong> 1.2</p>
+                    <p><strong>Max Speed Turbo:</strong> 115 Km/h</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </a>
+      </li>
+
+      
+      <li>
+        <a href="poyopa.html" class="vehicle-link">
+          <div class="vehicle-tooltip">
+            <label><input type="checkbox" checked disabled> Poyopa</label>
+            <div class="tooltip-content">
+              <div class="tooltip-text">
+                <div class="vehicle-name"><strong>Poyopa</strong></div>
+                <div class="tooltip-body">
+                  <img src="https://drivebeyondhorizons.wiki.gg/images/e/ef/POYOPA.png" alt="Poyopa" />
+                  <div>
+                    <p><strong>Total Parts:</strong> 55</p>
+                    <p><strong>Max Speed:</strong> 120 Km/h</p>
+                    <p><strong>Fuel Consumption:</strong> 4.0 L/km</p>
+                    <p><strong>Max Speed Turbo:</strong> 127 Km/h</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </a>
+      </li>
+      
+      <li>
+        <a href="bonphiac.html" class="vehicle-link">
+          <div class="vehicle-tooltip">
+            <label><input type="checkbox" disabled> Bonphiac</label>
+            <div class="tooltip-content">
+              <div class="tooltip-text">
+                <div class="vehicle-name"><strong>Bonphiac</strong></div>
+                <div class="tooltip-body">
+                  <img src="https://drivebeyondhorizons.wiki.gg/images/0/00/Bonphiac.JPG" alt="Bonphiac" />
+                  <div>
+                    <p><strong>Total Parts:</strong> 58</p>
+                    <p><strong>Max Speed:</strong> 190 Km/h</p>
+                    <p><strong>Fuel Consumption:</strong> 3.0 L/km</p>
+                    <p><strong>Max Speed Turbo:</strong> 185 Km/h</p>
+                    <p><strong>Max Speed Twin Turbo:</strong> 195 Km/h</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </a>
+      </li>
+      
+      <li>
+        <a href="musgoat.html" class="vehicle-link">
+          <div class="vehicle-tooltip">
+            <label><input type="checkbox" checked disabled> Musgoat</label>
+            <div class="tooltip-content">
+              <div class="tooltip-text">
+                <div class="vehicle-name"><strong>Musgoat</strong></div>
+                <div class="tooltip-body">
+                  <img src="https://drivebeyondhorizons.wiki.gg/images/a/af/Musgoat_full.png" alt="Musgoat" />
+                  <div>
+                    <p><strong>Total Parts:</strong> 48</p>
+                    <p><strong>Max Speed:</strong> 140 Km/h</p>
+                    <p><strong>Fuel Consumption:</strong> 3.1 L/km</p>
+                    <p><strong>Max Speed Turbo:</strong> 140 Km/h</p>
+                    <p><strong>Max Speed Twin Turbo:</strong> 155 Km/h</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </a>
+      </li>
+      
+      <li>
+        <a href="triclops.html" class="vehicle-link">
+          <div class="vehicle-tooltip">
+            <label><input type="checkbox" disabled> TriClops</label>
+            <div class="tooltip-content">
+              <div class="tooltip-text">
+                <div class="vehicle-name"><strong>TriClops</strong></div>
+                <div class="tooltip-body">
+                  <img src="https://drivebeyondhorizons.wiki.gg/images/1/11/Triclops.png" alt="TriClops" />
+                  <div>
+                    <p><strong>Total Parts:</strong> 53</p>
+                    <p><strong>Max Speed:</strong> 180 Km/h</p>
+                    <p><strong>Fuel Consumption:</strong> 1.5 L/km</p>
+                    <p><strong>Max Speed Turbo:</strong> 215 Km/h</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </a>
+      </li>
+      
+      <li>
+        <a href="gtr.html" class="vehicle-link">
+          <div class="vehicle-tooltip">
+            <label><input type="checkbox" checked disabled> GTR</label>
+            <div class="tooltip-content">
+              <div class="tooltip-text">
+                <div class="vehicle-name"><strong>GTR</strong></div>
+                <div class="tooltip-body">
+                  <img src="https://drivebeyondhorizons.wiki.gg/images/8/8f/GTR.png" alt="GTR" />
+                  <div>
+                    <p><strong>Total Parts:</strong> 53</p>
+                    <p><strong>Max Speed:</strong> 212 Km/h</p>
+                    <p><strong>Fuel Consumption:</strong> 2.4 L/km</p>
+                    <p><strong>Max Speed Turbo:</strong> 200 Km/h</p>
+                    <p><strong>Max Speed Twin Turbo:</strong> 214 Km/h</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </a>
+      </li>
+      
+      <li>
+        <a href="golf.html" class="vehicle-link">
+          <div class="vehicle-tooltip">
+            <label><input type="checkbox" checked disabled> Golf</label>
+            <div class="tooltip-content">
+              <div class="tooltip-text">
+                <div class="vehicle-name"><strong>Golf</strong></div>
+                <div class="tooltip-body">
+                  <img src="https://drivebeyondhorizons.wiki.gg/images/a/a8/Full_golf.png" alt="Golf" />
+                  <div>
+                    <p><strong>Total Parts:</strong> 57</p>
+                    <p><strong>Max Speed:</strong> 190 Km/h</p>
+                    <p><strong>Fuel Consumption:</strong> 1.6 L/km</p>
+                    <p><strong>Max Speed Turbo:</strong> 220 Km/h</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </a>
+      </li>
+      
+      <li>
+        <a href="uaz.html" class="vehicle-link">
+          <div class="vehicle-tooltip">
+            <label><input type="checkbox" disabled> UAZ</label>
+            <div class="tooltip-content">
+              <div class="tooltip-text">
+                <div class="vehicle-name"><strong>UAZ</strong></div>
+                <div class="tooltip-body">
+                  <img src="https://drivebeyondhorizons.wiki.gg/images/b/b3/UAZ_.png" alt="UAZ" />
+                  <div>
+                    <p><strong>Total Parts:</strong> 79</p>
+                    <p><strong>Max Speed:</strong> 105 Km/h</p>
+                    <p><strong>Fuel Consumption:</strong> 2.1 L/km</p>
+                    <p><strong>Max Speed Turbo:</strong> 120 Km/h</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </a>
+      </li>
+      
+      <li>
+        <a href="c18.html" class="vehicle-link">
+          <div class="vehicle-tooltip">
+            <label><input type="checkbox" disabled> C18</label>
+            <div class="tooltip-content">
+              <div class="tooltip-text">
+                <div class="vehicle-name"><strong>C18</strong></div>
+                <div class="tooltip-body">
+                  <img src="https://drivebeyondhorizons.wiki.gg/images/7/70/C18.png" alt="C18" />
+                  <div>
+                    <p><strong>Total Parts:</strong> 61</p>
+                    <p><strong>Max Speed:</strong> 110 Km/h</p>
+                    <p><strong>Fuel Consumption:</strong> 3.6 L/km</p>
+                    <p><strong>Max Speed Turbo:</strong> 115 Km/h</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </a>
+      </li>
+      
+      <li>
+        <a href="ifa.html" class="vehicle-link">
+          <div class="vehicle-tooltip">
+            <label><input type="checkbox" disabled> IFA</label>
+            <div class="tooltip-content">
+              <div class="tooltip-text">
+                <div class="vehicle-name"><strong>IFA</strong></div>
+                <div class="tooltip-body">
+                  <img src="https://drivebeyondhorizons.wiki.gg/images/a/a4/IFA.png" alt="IFA" />
+                  <div>
+                    <p><strong>Total Parts:</strong> 52</p>
+                    <p><strong>Max Speed:</strong> 130 Km/h</p>
+                    <p><strong>Fuel Consumption:</strong> 2.6 L/km</p>
+                    <p><strong>Max Speed Turbo:</strong> 134 Km/h</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </a>
+      </li>
+      
+      <li>
+        <a href="trailer.html" class="vehicle-link">
+          <div class="vehicle-tooltip">
+            <label><input type="checkbox" disabled> Trailer</label>
+            <div class="tooltip-content">
+              <div class="tooltip-text">
+                <div class="vehicle-name"><strong>Trailer</strong></div>
+                <div class="tooltip-body">
+                  <img src="https://drivebeyondhorizons.wiki.gg/images/6/67/Full_Trailer.png" alt="Trailer" />
+                  <div>
+                    <p><strong>Total Parts:</strong> 8</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </a>
+      </li>
+      
+        </ul>
     </div>
   </div>
 
